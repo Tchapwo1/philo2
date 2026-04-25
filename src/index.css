@@ -1,0 +1,301 @@
+/* ── TRIBUNAL DE LA PHILO — PRODUCTION HUB ──────────────────────────
+   Surface Hierarchy:
+   S0: Background (#FFF59E + 10% Opacity Cream)
+   S1: Card Surfaces (Pure White)
+   S2: Overlays & Modals
+   S3: Active Functional Markers (Crimson #C9303E)
+──────────────────────────────────────────────────────────── */
+
+:root {
+    /* ATMOS / LAKERS Foundation */
+    --bg-page: #0A0510;
+    --s1-card: rgba(255, 255, 255, 0.03);
+    --s2-float: rgba(255, 255, 255, 0.05);
+    --s3-active: #FDB927; /* Lakers Gold */
+
+    /* Palette Tokens */
+    --primary: #FDB927; /* Gold */
+    --primary-glow: rgba(253, 185, 39, 0.3);
+    --accent: #552583; /* Lakers Purple */
+    --accent-glow: rgba(85, 37, 131, 0.2);
+    
+    --encre: #ffffff;
+    --encre-dim: rgba(255, 255, 255, 0.6);
+    
+    /* Rhythm & Elevation */
+    --unit: 6px;
+    --shadow-s1: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+    --shadow-hover: 0 8px 32px 0 var(--accent-glow);
+    --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Poppins', 'Libre Baskerville', serif;
+    background-color: var(--bg-page);
+    color: var(--encre);
+    min-height: 100vh;
+    overflow-x: hidden;
+    line-height: 1.6;
+    
+    /* ATMOS Background (Showtime Glows) */
+    background-image: 
+        radial-gradient(circle at 20% 20%, var(--accent-glow) 0%, transparent 40%),
+        radial-gradient(circle at 80% 80%, var(--primary-glow) 0%, transparent 40%),
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    background-attachment: fixed;
+}
+
+#root {
+    max-width: 1400px;
+    margin: 0 auto;
+    min-height: 100vh;
+}
+
+/* Bento Grid Grammar */
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: auto;
+    gap: calc(var(--unit) * 4);
+    padding: calc(var(--unit) * 4);
+}
+
+.card-s { grid-column: span 1; }
+.card-m { grid-column: span 2; }
+.card-l { grid-column: span 2; grid-row: span 2; }
+
+@media (max-width: 1080px) {
+    .bento-grid { grid-template-columns: repeat(2, 1fr); }
+    .card-l { grid-column: span 2; }
+}
+
+@media (max-width: 768px) {
+    .bento-grid { grid-template-columns: 1fr; }
+    .card-s, .card-m, .card-l { grid-column: span 1; }
+    .card-s { aspect-ratio: 2/1; }
+}
+
+/* S1: Card System (Glassmorphism) */
+.bento-card {
+    background: var(--s1-card);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: var(--glass-border);
+    padding: calc(var(--unit) * 5);
+    box-shadow: var(--shadow-s1);
+    transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    cursor: pointer;
+    border-radius: 12px;
+}
+
+.bento-card:hover {
+    transform: translateY(-4px);
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(253, 185, 39, 0.4);
+    box-shadow: var(--shadow-hover);
+}
+
+.bento-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    opacity: 0;
+    transition: opacity 0.4s;
+    z-index: -1;
+    filter: blur(20px);
+}
+
+.bento-card:hover::after {
+    opacity: 0.15;
+}
+
+/* Typography */
+.font-display { font-family: 'Playfair Display', serif; }
+.font-mono { font-family: 'JetBrains Mono', monospace; }
+
+h1 { font-size: clamp(3rem, 10vw, 6rem); font-weight: 900; line-height: 0.9; text-transform: uppercase; }
+h2 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; line-height: 1; }
+
+/* Functional Markers (S3) */
+.tag-hub {
+    display: flex;
+    gap: var(--unit);
+    margin-bottom: calc(var(--unit) * 2);
+}
+
+.tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 0.2rem 0.6rem;
+    border: 1px solid var(--encre);
+    text-transform: uppercase;
+    background: white;
+}
+
+.tag-vibrant {
+    background: var(--s3-active);
+    color: white;
+    border-color: var(--s3-active);
+}
+
+/* Utility Bar (S2 Elevation) */
+.utility-bar {
+    position: sticky;
+    top: 0;
+    background: var(--s2-float);
+    border-bottom: 2px solid var(--encre);
+    padding: 1rem 2rem;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tab-link {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+}
+
+.tab-link.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+}
+
+/* Stepper (Pedagogical) */
+.pedagogical-stepper {
+    display: flex;
+    justify-content: space-between;
+    margin: 4rem 0;
+    position: relative;
+    padding: 0 4rem;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    z-index: 1;
+    text-align: center;
+}
+
+.step-circle {
+    width: 60px;
+    height: 60px;
+    border: 3px solid var(--encre);
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 1.2rem;
+    box-shadow: 4px 4px 0 var(--encre);
+}
+
+.step.active .step-circle {
+    background: var(--primary);
+    color: white;
+}
+
+.step-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    font-weight: 900;
+}
+
+.step-line {
+    position: absolute;
+    top: 30px;
+    left: 10%;
+    width: 80%;
+    height: 3px;
+    background: var(--encre);
+    opacity: 0.1;
+}
+
+/* Coach Mode (Adaptive logic) */
+.coach-msg {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--secondary);
+    font-style: italic;
+    margin-bottom: 0.5rem;
+}
+/* --- SENTIENT FEEDBACK (VERDICT MACHINE) --- */
+@keyframes gavel-strike {
+  0% { transform: scale(1); filter: brightness(1); }
+  20% { transform: scale(1.03); filter: brightness(1.2); }
+  100% { transform: scale(1); filter: brightness(1); }
+}
+
+@keyframes case-dismissed {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-4px); }
+  40%, 80% { transform: translateX(4px); }
+}
+
+.gavel-strike {
+  animation: gavel-strike 0.5s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+  box-shadow: 0 0 40px rgba(201, 48, 62, 0.2);
+}
+
+.case-dismissed {
+  animation: case-dismissed 0.4s ease-in-out;
+  background-color: #fff9c4 !important; /* Slight yellowing on error */
+}
+
+.coach-feedback-box {
+  background: white;
+  border-left: 6px solid var(--s3-active);
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  box-shadow: var(--shadow-s1);
+  transition: all 0.3s ease;
+}
+
+.coach-logic-violation {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 900;
+  color: var(--s3-active);
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.5rem;
+}
+
+.coach-analysis {
+  font-style: italic;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--encre);
+}
+
+.hud-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: white;
+  border-bottom: 2px solid var(--encre);
+  position: sticky;
+  top: 72px; /* Below utility bar */
+  z-index: 990;
+}

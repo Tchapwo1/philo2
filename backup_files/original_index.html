@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le Tribunal de la Philo — Bac 2026</title>
+    <meta name="description" content="Entraînez-vous au Bac Philosophie 2026 : notions, méthode, duels d'auteurs, détection d'erreurs, simulation totale. Timer, streak, mode révision.">
+    <meta name="theme-color" content="#F5EFE0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;700&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* ── TRIADIC PALETTE — MODE BEIGE ────────────────────────────
+           Primary   Raspberry  #C4005D  →  --rasp
+           Secondary Leaf Green #5DC400  →  --vert
+           Tertiary  Azure Blue #005DC4  →  --azur
+           Neutral   Warm Beige #F5EFE0  →  --fond  (page bg)
+        ──────────────────────────────────────────────────────────── */
+        :root{
+            /* Raspberry family */
+            --rasp:       #C4005D;
+            --rasp-pale:  #e0005a;
+            --rasp-dim:   #8a003f;
+            --rasp-ghost: rgba(196,0,93,.07);
+            --rasp-border:rgba(196,0,93,.2);
+            /* Leaf Green family */
+            --vert:       #3a7d00;
+            --vert-pale:  #4ea800;
+            --vert-dim:   #265200;
+            --vert-ghost: rgba(58,125,0,.08);
+            --vert-border:rgba(58,125,0,.22);
+            /* Azure Blue family */
+            --azur:       #005DC4;
+            --azur-pale:  #0052b0;
+            --azur-dim:   #003d85;
+            --azur-ghost: rgba(0,93,196,.07);
+            --azur-border:rgba(0,93,196,.2);
+            /* Beige neutrals — light mode */
+            --fond:       #F5EFE0;
+            --fond-card:  #FBF8F0;
+            --fond-deep:  #EDE4CE;
+            --encre:      #1C1410;
+            --encre-dim:  #6B5B48;
+            --bord:       rgba(90,65,35,.15);
+        }
+
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+        html{scroll-behavior:smooth;}
+        body{font-family:'Libre Baskerville',Georgia,serif;background-color:var(--fond);color:var(--encre);min-height:100vh;overflow-x:hidden;}
+
+        /* Soft grain on beige */
+        body::before{content:'';position:fixed;inset:0;background-image:
+            repeating-linear-gradient(112deg,transparent 0px,transparent 140px,rgba(196,0,93,.015) 140px,rgba(196,0,93,.015) 141px),
+            repeating-linear-gradient(248deg,transparent 0px,transparent 180px,rgba(0,93,196,.012) 180px,rgba(0,93,196,.012) 181px),
+            repeating-linear-gradient(25deg,transparent 0px,transparent 220px,rgba(58,125,0,.01) 220px,rgba(58,125,0,.01) 221px);
+            pointer-events:none;z-index:0;}
+
+        #app{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:2rem 1.25rem 4rem;}
+
+        /* HEADER */
+        .site-header{text-align:center;padding:3rem 0 2rem;border-bottom:1px solid var(--rasp-border);margin-bottom:3rem;}
+        .site-header .eyebrow{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.35em;color:var(--rasp);text-transform:uppercase;margin-bottom:1rem;opacity:.9;}
+        .site-header h1{font-family:'Playfair Display',serif;font-size:clamp(2.4rem,7vw,4.5rem);font-weight:900;line-height:1;color:var(--encre);letter-spacing:-.02em;}
+        .site-header h1 em{font-style:italic;color:var(--rasp);}
+        .site-header .tagline{margin-top:1rem;font-size:.85rem;color:var(--encre-dim);font-style:italic;}
+        .gold-rule{width:60px;height:2px;background:linear-gradient(90deg,transparent,var(--rasp),transparent);margin:1rem auto;}
+
+        /* SCREENS */
+        .screen{display:none;}
+        .screen.active{display:block;animation:fadeUp .45s ease-out;}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+        /* MENU */
+        .menu-title{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--rasp);text-align:center;margin-bottom:1.5rem;}
+
+        .stats-bar{display:flex;justify-content:center;gap:2rem;margin-bottom:2rem;padding:1rem 1.5rem;background:var(--rasp-ghost);border:1px solid var(--rasp-border);border-radius:4px;flex-wrap:wrap;}
+        .stat-item{text-align:center;}
+        .stat-val{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:900;color:var(--rasp);line-height:1;}
+        .stat-lbl{font-family:'JetBrains Mono',monospace;font-size:.5rem;letter-spacing:.15em;text-transform:uppercase;color:var(--encre-dim);margin-top:.3rem;}
+
+        .levels-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:1.5rem;}
+        .level-card{background:var(--fond-card);border:1px solid var(--bord);border-radius:4px;padding:1.25rem 1rem;cursor:pointer;transition:all .25s ease;text-align:left;position:relative;overflow:hidden;}
+        .level-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--rasp-ghost) 0%,transparent 60%);opacity:0;transition:opacity .25s;}
+        .level-card:hover{border-color:var(--rasp);transform:translateY(-3px);box-shadow:0 6px 24px rgba(90,50,20,.15),0 0 18px rgba(196,0,93,.1);}
+        .level-card:hover::before{opacity:1;}
+        .card-best{position:absolute;top:.6rem;right:.6rem;font-family:'JetBrains Mono',monospace;font-size:.5rem;letter-spacing:.1em;color:var(--rasp);background:var(--rasp-ghost);border:1px solid var(--rasp-border);border-radius:100px;padding:2px 6px;opacity:.7;}
+        .card-best.has-score{color:var(--rasp-pale);border-color:var(--rasp-border);opacity:1;}
+
+        .badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.55rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border-radius:2px;margin-bottom:.6rem;}
+        /* Each badge now draws from the triadic family */
+        .badge-blue  {background:var(--azur-ghost);   color:var(--azur-pale);  border:1px solid var(--azur-border);}
+        .badge-slate {background:rgba(196,0,93,.1);    color:var(--rasp-pale);  border:1px solid var(--rasp-border);}
+        .badge-indigo{background:rgba(0,93,196,.12);   color:#93c5fd;           border:1px solid var(--azur-border);}
+        .badge-rose  {background:rgba(196,0,93,.12);   color:var(--rasp-pale);  border:1px solid var(--rasp-border);}
+        .level-card h3{font-family:'Libre Baskerville',serif;font-size:.8rem;font-weight:700;color:var(--encre);line-height:1.4;}
+
+        /* Grand Verdict — deep raspberry accent */
+        .grand-verdict{background:linear-gradient(135deg,var(--fond-deep) 0%,#e8dac0 100%);border:2px solid var(--rasp-dim);border-radius:6px;padding:2.5rem;cursor:pointer;transition:all .3s ease;position:relative;overflow:hidden;margin-bottom:1.5rem;text-align:left;width:100%;}
+        .grand-verdict::after{content:'⚖';position:absolute;right:1.5rem;top:50%;transform:translateY(-50%);font-size:5rem;opacity:.06;transition:opacity .3s;}
+        .grand-verdict:hover{border-color:var(--rasp);transform:translateY(-4px);box-shadow:0 12px 40px rgba(90,50,20,.18),0 0 40px rgba(196,0,93,.12);}
+        .grand-verdict:hover::after{opacity:.12;}
+        .grand-verdict .gv-badge{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:var(--rasp);margin-bottom:.5rem;}
+        .grand-verdict h2{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:900;font-style:italic;color:var(--rasp);margin-bottom:.75rem;}
+        .grand-verdict p{font-size:.8rem;color:var(--encre-dim);line-height:1.7;max-width:560px;}
+
+        /* Info box — azure blue accent */
+        .info-box{border:1px solid var(--azur-border);border-left:3px solid var(--azur);border-radius:2px;padding:1.25rem 1.5rem;background:var(--azur-ghost);}
+        .info-box .label{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:var(--azur-pale);margin-bottom:.5rem;}
+        .info-box p{font-size:.8rem;color:var(--encre-dim);font-style:italic;line-height:1.7;}
+
+        /* GAME HUD */
+        .hud{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem;flex-wrap:wrap;gap:.5rem;}
+        .hud-left{display:flex;align-items:center;gap:1rem;}
+        .hud-right{display:flex;align-items:center;gap:.75rem;}
+        .hud-progress{font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:.15em;color:var(--encre-dim);}
+        .hud-progress span{color:var(--rasp-pale);font-weight:700;}
+        /* Score pill — azure */
+        .hud-score{display:flex;align-items:center;gap:.5rem;background:var(--azur-ghost);border:1px solid var(--azur-border);border-radius:100px;padding:.4rem 1rem;font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--azur);font-weight:700;}
+        /* Streak — warm orange (between rasp and vert on the wheel — keeps harmony) */
+        .hud-streak{display:flex;align-items:center;gap:.3rem;font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;color:#f97316;opacity:0;transition:opacity .3s,transform .3s;transform:scale(.8);}
+        .hud-streak.active{opacity:1;transform:scale(1);}
+        .hud-streak.pulse{animation:streakPulse .4s ease-out;}
+        @keyframes streakPulse{0%{transform:scale(1)}50%{transform:scale(1.35)}100%{transform:scale(1)}}
+
+        /* TIMER — raspberry ring */
+        .timer-wrap{position:relative;width:36px;height:36px;flex-shrink:0;}
+        .timer-svg{transform:rotate(-90deg);}
+        .timer-track{fill:none;stroke:rgba(255,255,255,.07);stroke-width:3;}
+        .timer-fill{fill:none;stroke:var(--rasp);stroke-width:3;stroke-linecap:round;transition:stroke .3s;stroke-dasharray:88;stroke-dashoffset:0;}
+        .timer-fill.urgent{stroke:#ff2060;}
+        .timer-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;color:var(--rasp-pale);}
+        .timer-num.urgent{color:#ff2060;}
+
+        /* Progress bar — raspberry → azure gradient */
+        .progress-bar-wrap{width:100%;height:3px;background:rgba(255,255,255,.06);border-radius:2px;margin-bottom:2rem;overflow:hidden;}
+        .progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--rasp-dim),var(--rasp),var(--azur));border-radius:2px;transition:width .4s ease;}
+
+        /* Subject card — raspberry top border */
+        .sujet-card{background:var(--fond-card);border:1px solid var(--rasp-border);border-top:3px solid var(--rasp);border-radius:4px;padding:2rem 2.5rem;margin-bottom:2rem;text-align:center;}
+        .sujet-card .niveau-label{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.25em;text-transform:uppercase;color:var(--rasp-pale);margin-bottom:1rem;opacity:.9;}
+        .sujet-card h3{font-family:'Playfair Display',serif;font-size:clamp(1.1rem,3.5vw,1.65rem);font-weight:700;font-style:italic;color:var(--encre);color:var(--encre);line-height:1.45;}
+
+        /* Step dots — raspberry */
+        .step-indicator{display:flex;justify-content:center;gap:.5rem;margin-bottom:1.5rem;}
+        .step-dot{width:28px;height:4px;border-radius:2px;background:rgba(196,0,93,.15);transition:background .3s;}
+        .step-dot.active{background:var(--rasp);}
+        .step-dot.done{background:var(--rasp-dim);}
+        .etape-title{font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--encre-dim);text-align:center;margin-bottom:1.25rem;}
+        .etape-title strong{color:var(--rasp-pale);}
+
+        /* Options — hover uses azure */
+        .options-list{display:flex;flex-direction:column;gap:.75rem;}
+        .opt-btn{width:100%;text-align:left;padding:1.1rem 1.5rem;background:var(--fond-card);border:1px solid var(--bord);border-radius:4px;color:var(--encre);font-family:'Libre Baskerville',serif;font-size:.82rem;line-height:1.55;cursor:pointer;transition:all .2s ease;}
+        .opt-btn .opt-tag{display:block;font-family:'JetBrains Mono',monospace;font-size:.52rem;letter-spacing:.15em;text-transform:uppercase;color:var(--rasp-dim);margin-bottom:.35rem;font-weight:700;}
+        .opt-btn:not(:disabled):hover{border-color:var(--azur-border);background:var(--azur-ghost);transform:translateX(4px);}
+        .opt-btn:not(:disabled):hover .opt-tag{color:var(--azur);}
+
+        /* Feedback panels */
+        .feedback-panel{border-radius:4px;padding:2rem;margin-top:1.5rem;animation:fadeUp .35s ease-out;}
+        /* Correct — Leaf Green */
+        .feedback-correct{background:rgba(93,196,0,.1);border:1px solid var(--vert-border);border-left:4px solid var(--vert);}
+        /* Wrong — Raspberry */
+        .feedback-wrong{background:rgba(196,0,93,.1);border:1px solid var(--rasp-border);border-left:4px solid var(--rasp);}
+        /* Timeout — Azure */
+        .feedback-timeout{background:rgba(0,93,196,.06);border:1px solid var(--azur-border);border-left:4px solid var(--azur);}
+        .feedback-status{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;margin-bottom:.6rem;}
+        .feedback-correct .feedback-status{color:var(--vert-pale);}
+        .feedback-wrong .feedback-status{color:var(--rasp-pale);}
+        .feedback-timeout .feedback-status{color:var(--azur);}
+        .feedback-msg{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;color:var(--encre);margin-bottom:.75rem;}
+        .feedback-tip{font-size:.78rem;color:var(--encre-dim);font-style:italic;line-height:1.65;padding-top:.75rem;border-top:1px solid rgba(255,255,255,.08);}
+        .feedback-tip strong{color:var(--vert);font-style:normal;}
+
+        /* Pts toast — leaf green */
+        .pts-toast{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:.1em;color:var(--vert-pale);margin-left:.5rem;animation:toastPop .5s ease-out forwards;}
+        @keyframes toastPop{0%{opacity:0;transform:translateY(6px) scale(.8)}60%{opacity:1;transform:translateY(-4px) scale(1.1)}100%{opacity:1;transform:translateY(0) scale(1)}}
+
+        .btn-next{display:block;width:100%;margin-top:1.25rem;padding:1rem 2rem;background:var(--azur);color:#fff;font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;border:none;border-radius:3px;cursor:pointer;transition:all .2s ease;}
+        .btn-next:hover{background:var(--azur-pale);transform:translateY(-2px);box-shadow:0 8px 25px rgba(0,93,196,.25);}
+
+        .review-banner{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--rasp);background:var(--rasp-ghost);border:1px solid var(--rasp-border);border-radius:100px;padding:3px 10px;display:none;margin-left:.5rem;}
+        .review-banner.visible{display:inline;}
+
+        .btn-back{display:inline-flex;align-items:center;gap:.5rem;font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:var(--encre-dim);background:none;border:none;cursor:pointer;padding:.5rem 0;transition:color .2s;}
+        .btn-back:hover{color:var(--rasp);}
+
+        /* END SCREEN */
+        .end-card{text-align:center;padding:4rem 2rem;}
+        .end-medal{font-size:5rem;margin-bottom:1.5rem;line-height:1;}
+        .end-title{font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:900;font-style:italic;color:var(--rasp-pale);margin-bottom:.5rem;}
+        .end-pts{font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.2em;color:var(--encre-dim);margin-bottom:2rem;}
+        .end-verdict{background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.2);border-radius:4px;padding:1.75rem 2rem;font-size:.9rem;font-style:italic;color:var(--encre-dim);line-height:1.7;margin-bottom:1.5rem;}
+
+        .session-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:1.5rem;}
+        .sum-item{background:var(--fond-card);border:1px solid var(--bord);border-radius:4px;padding:1rem;text-align:center;}
+        .sum-val{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:900;color:var(--rasp);}
+        .sum-lbl{font-family:'JetBrains Mono',monospace;font-size:.48rem;letter-spacing:.12em;text-transform:uppercase;color:var(--encre-dim);margin-top:.25rem;}
+
+        .end-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:1.5rem;}
+        .btn-secondary{padding:.75rem 1.5rem;background:var(--rasp-ghost);border:1px solid var(--rasp-border);border-radius:3px;color:var(--rasp);font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:all .2s;}
+        .btn-secondary:hover{background:var(--rasp-ghost);transform:translateY(-2px);}
+        .btn-secondary:disabled{opacity:.35;cursor:default;transform:none;}
+
+        .share-toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--vert-pale);color:#fff;font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;letter-spacing:.15em;padding:.75rem 1.5rem;border-radius:100px;opacity:0;transition:all .3s ease;pointer-events:none;z-index:999;}
+        .share-toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+        @media(max-width:600px){
+            .levels-grid{grid-template-columns:1fr 1fr;}
+            .grand-verdict{padding:1.75rem;}
+            .grand-verdict h2{font-size:1.4rem;}
+            .sujet-card{padding:1.5rem;}
+            .stats-bar{gap:1rem;}
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+
+    <header class="site-header">
+        <p class="eyebrow">Bac Philosophie · Édition Expert 2026</p>
+        <h1 class="display">Le Tribunal<br>de la <em>Philo</em></h1>
+        <div class="gold-rule"></div>
+        <p class="tagline">« L'Excellence par la Synthèse — <em>Sapere Aude</em> »</p>
+    </header>
+
+    <!-- MENU -->
+    <div id="screen-menu" class="screen active">
+        <p class="menu-title">↳ Choisissez votre Instruction</p>
+
+        <div class="stats-bar">
+            <div class="stat-item"><div class="stat-val" id="stat-total-q">0</div><div class="stat-lbl">Questions</div></div>
+            <div class="stat-item"><div class="stat-val" id="stat-correct">0</div><div class="stat-lbl">Correctes</div></div>
+            <div class="stat-item"><div class="stat-val" id="stat-best-streak">0</div><div class="stat-lbl">Meilleur Streak</div></div>
+            <div class="stat-item"><div class="stat-val" id="stat-sessions">0</div><div class="stat-lbl">Sessions</div></div>
+        </div>
+
+        <div class="levels-grid">
+            <button class="level-card" onclick="startLevel(0)" aria-label="Niveau 0 Boussole — Notions">
+                <span class="card-best" id="best-0">—</span>
+                <span class="badge badge-blue">N0 · Boussole</span>
+                <h3>Notions &amp; Repères fondamentaux</h3>
+            </button>
+            <button class="level-card" onclick="startLevel(1)" aria-label="Niveau 1 Analyse — Méthode">
+                <span class="card-best" id="best-1">—</span>
+                <span class="badge badge-slate">N1 · Analyse</span>
+                <h3>Verrous &amp; Timing dissertation</h3>
+            </button>
+            <button class="level-card" onclick="startLevel(3)" aria-label="Niveau 3 Duels — Auteurs">
+                <span class="card-best" id="best-3">—</span>
+                <span class="badge badge-indigo">N3 · Duels</span>
+                <h3>Confrontations d'Auteurs</h3>
+            </button>
+            <button class="level-card" onclick="startLevel(7)" aria-label="Niveau 7 Code Pénal — Erreurs">
+                <span class="card-best" id="best-7">—</span>
+                <span class="badge badge-rose">N7 · Code Pénal</span>
+                <h3>Traque aux Erreurs de copie</h3>
+            </button>
+        </div>
+
+        <button class="grand-verdict" onclick="startLevel(8)" aria-label="Niveau 8 Grand Verdict — Simulation totale">
+            <p class="gv-badge">⚖ N8 · Le Grand Verdict</p>
+            <h2>Simulation Totale</h2>
+            <p>Synthétisez toute la data du programme pour construire une copie 20/20 sur les sujets probables de 2026. Hameçon, Paradoxe, Duel, Standing : devenez Grand Maître du Tribunal.</p>
+        </button>
+
+        <div class="info-box">
+            <p class="label"><i class="fas fa-brain" style="margin-right:.4em"></i>Nouvelles fonctionnalités</p>
+            <p>Chaque niveau dispose d'un <strong style="color:var(--rasp);font-style:normal">timer de 30 secondes</strong> avec bonus de vitesse, d'un système de <strong style="color:var(--rasp);font-style:normal">streak 🔥</strong>, et d'un <strong style="color:var(--rasp);font-style:normal">mode Révision</strong> pour retravailler vos erreurs en fin de session.</p>
+        </div>
+    </div>
+
+    <!-- JEU -->
+    <div id="screen-game" class="screen">
+        <div style="display:flex;align-items:center;margin-bottom:2rem">
+            <button class="btn-back" onclick="goMenu()" style="margin-bottom:0">← Menu</button>
+            <span class="review-banner" id="review-banner">⟳ Mode Révision</span>
+        </div>
+
+        <div class="hud">
+            <div class="hud-left">
+                <div class="hud-progress">
+                    <span id="hud-cur">1</span>&nbsp;/&nbsp;<span id="hud-max">1</span>
+                </div>
+                <div class="hud-streak" id="hud-streak">🔥 <span id="streak-count">0</span>×</div>
+            </div>
+            <div class="hud-right">
+                <div class="timer-wrap">
+                    <svg class="timer-svg" viewBox="0 0 36 36" width="36" height="36">
+                        <circle class="timer-track" cx="18" cy="18" r="14"/>
+                        <circle class="timer-fill" id="timer-fill" cx="18" cy="18" r="14"/>
+                    </svg>
+                    <div class="timer-num" id="timer-num">30</div>
+                </div>
+                <div class="hud-score">
+                    <i class="fas fa-gavel" style="font-size:.7em;opacity:.7"></i>
+                    <span id="hud-score">0</span>&nbsp;pts
+                </div>
+            </div>
+        </div>
+
+        <div class="progress-bar-wrap">
+            <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+        </div>
+
+        <div class="sujet-card">
+            <p class="niveau-label" id="card-label">—</p>
+            <h3 id="card-subject">Chargement…</h3>
+        </div>
+
+        <div id="quiz-zone"></div>
+    </div>
+
+    <!-- FIN -->
+    <div id="screen-end" class="screen">
+        <div class="end-card">
+            <div class="end-medal" id="end-medal">🎓</div>
+            <h2 class="end-title">Verdict de la Cour</h2>
+            <p class="end-pts" id="end-pts">— pts</p>
+
+            <div class="session-summary">
+                <div class="sum-item"><div class="sum-val" id="end-correct">0</div><div class="sum-lbl">Correctes</div></div>
+                <div class="sum-item"><div class="sum-val" id="end-streak">0</div><div class="sum-lbl">Meilleur streak</div></div>
+                <div class="sum-item"><div class="sum-val" id="end-time">0s</div><div class="sum-lbl">Tps moyen/q</div></div>
+            </div>
+
+            <div class="end-verdict" id="end-verdict"></div>
+
+            <div class="end-actions">
+                <button class="btn-secondary" id="btn-review" onclick="startReview()">
+                    ⟳ Réviser mes erreurs (<span id="error-count">0</span>)
+                </button>
+                <button class="btn-secondary" onclick="shareScore()">↗ Partager mon score</button>
+            </div>
+
+            <button class="btn-next" onclick="goMenu()">↩ Nouvelle Session</button>
+        </div>
+    </div>
+
+</div>
+<div class="share-toast" id="share-toast">✓ Score copié dans le presse-papier</div>
+
+<script>
+/* ================================================================
+   BASES DE DONNÉES
+================================================================ */
+const DB_L0=[{q:"Quelle distinction Kant opère-t-il entre 'agir selon le devoir' et 'agir par devoir' ?",options:[{text:"Agir par devoir seul a une valeur morale : c'est l'action motivée par la loi morale, non par l'intérêt.",correct:true},{text:"Les deux ont la même valeur morale, l'important est le résultat de l'action.",correct:false},{text:"Agir selon le devoir est supérieur car il prend en compte les conséquences.",correct:false}],tip:"Pour Kant, la moralité est dans la maxime, non dans le résultat. Une action conforme au devoir par intérêt n'est pas morale."},{q:"Le repère 'Absolu / Relatif' désigne :",options:[{text:"Ce qui vaut par soi-même, sans condition (absolu) vs ce qui ne vaut que par rapport à autre chose (relatif).",correct:true},{text:"Ce qui est général (absolu) par opposition à ce qui est particulier (relatif).",correct:false},{text:"Ce qui est objectif (absolu) par opposition à ce qui est subjectif (relatif).",correct:false}],tip:"Un jugement est absolu quand il ne dépend d'aucune condition externe. La vérité mathématique est absolue ; le goût est relatif."},{q:"La notion de 'mauvaise foi' chez Sartre désigne :",options:[{text:"Le fait de se fuir soi-même en niant sa liberté, en se traitant comme une chose.",correct:true},{text:"Le mensonge délibéré envers autrui pour obtenir un avantage.",correct:false},{text:"L'erreur de jugement due à un manque d'information.",correct:false}],tip:"La mauvaise foi est une auto-tromperie : on se convainc qu'on n'avait 'pas le choix', niant ainsi sa liberté radicale."},{q:"Chez Platon, le mythe de la caverne illustre principalement :",options:[{text:"L'ascension de l'âme de l'ignorance (ombres) vers la connaissance vraie (soleil = Idée du Bien).",correct:true},{text:"La nécessité de la censure des artistes dans la cité idéale.",correct:false},{text:"L'impossibilité pour l'homme du commun d'accéder à la vérité philosophique.",correct:false}],tip:"La caverne = monde sensible. Le soleil = monde intelligible des Idées. Le philosophe fait ce chemin d'ascension."},{q:"Qu'est-ce que le 'cogito' de Descartes (« Je pense donc je suis ») établit ?",options:[{text:"L'existence du sujet pensant comme première certitude indubitable, fondement de toute connaissance.",correct:true},{text:"Que la pensée est supérieure au corps dans la hiérarchie des facultés humaines.",correct:false},{text:"Que Dieu existe car quelqu'un doit être à l'origine de mes pensées.",correct:false}],tip:"Le cogito est une vérité performative : l'acte de douter prouve l'existence du sujet qui doute. Fondement de la méthode cartésienne."},{q:"Le repère 'En acte / En puissance' (Aristote) signifie :",options:[{text:"Ce qui existe déjà de façon effective (en acte) vs ce qui existe seulement comme possibilité non encore réalisée (en puissance).",correct:true},{text:"Ce qui est conscient (en acte) par opposition à ce qui est inconscient (en puissance).",correct:false},{text:"Ce qui est libre (en acte) par opposition à ce qui est contraint (en puissance).",correct:false}],tip:"Ex : la graine est un chêne en puissance, le chêne adulte est en acte. Fondamental pour penser le changement et le devenir."},{q:"La 'volonté générale' chez Rousseau se distingue de la 'volonté de tous' parce que :",options:[{text:"Elle vise le bien commun, non la somme des intérêts particuliers — on peut la méconnaître même en votant à la majorité.",correct:true},{text:"Elle est l'expression du vote majoritaire, donc toujours légitime et juste.",correct:false},{text:"Elle n'existe que dans un État monarchique où un souverain incarne l'intérêt collectif.",correct:false}],tip:"Rousseau distingue soigneusement ces deux notions. La volonté générale peut être méconnue par la majorité si elle vote pour ses intérêts particuliers."},{q:"Qu'appelle-t-on 'impératif catégorique' chez Kant ?",options:[{text:"Un commandement moral inconditionnel qui vaut pour tout être raisonnable, quelle que soit sa situation ou ses désirs.",correct:true},{text:"Une règle pratique qui dit comment atteindre un but donné : 'si tu veux X, fais Y'.",correct:false},{text:"Un principe religieux qui s'impose à l'homme par la foi et la révélation divine.",correct:false}],tip:"L'impératif catégorique s'oppose à l'impératif hypothétique. Sa formule : 'Agis selon la maxime qui peut être universalisée'. C'est la loi morale pure."},{q:"Le 'déterminisme' en philosophie affirme que :",options:[{text:"Tout événement, y compris les actions humaines, est la conséquence nécessaire de causes antérieures selon des lois naturelles.",correct:true},{text:"L'homme est libre de ses choix parce que sa conscience échappe aux lois de la nature.",correct:false},{text:"Les événements futurs sont écrits à l'avance par une force divine ou cosmique.",correct:false}],tip:"Le déterminisme pose le problème du libre arbitre : si tout est causé, peut-on encore parler de responsabilité morale ? Spinoza et Laplace en sont de grands défenseurs."},{q:"La distinction 'Être / Paraître' interroge :",options:[{text:"L'écart entre la réalité profonde d'une chose ou d'une personne et la façade qu'elle présente au monde extérieur.",correct:true},{text:"La différence entre ce qui existe matériellement et ce qui n'existe que dans l'esprit.",correct:false},{text:"L'opposition entre le corps visible et l'âme invisible, selon la métaphysique dualiste.",correct:false}],tip:"Ce repère traverse l'art (représentation vs réalité), la morale (hypocrisie) et la politique (image vs action). Incontournable dans un sujet sur l'art ou la vérité."}];
+
+const DB_L1=[{q:"'La liberté est-elle une illusion ?' — quelle est la première étape d'analyse ?",options:[{text:"Définir séparément 'liberté' et 'illusion', puis montrer la tension entre les deux termes.",correct:true},{text:"Répondre immédiatement 'Non, la liberté n'est pas une illusion' et le démontrer.",correct:false},{text:"Chercher le plus grand nombre possible de citations de philosophes sur la liberté.",correct:false}],tip:"L'analyse du sujet = déconstruire chaque terme. La tension entre les termes génère la problématique. Ne jamais répondre en introduction."},{q:"Quelle est la fonction précise de la problématique dans une dissertation de philosophie ?",options:[{text:"Formuler une question secondaire qui révèle le paradoxe ou l'enjeu caché dans le sujet.",correct:true},{text:"Résumer le sujet en une phrase plus courte pour le jury.",correct:false},{text:"Annoncer la thèse que vous allez défendre dans votre devoir.",correct:false}],tip:"La problématique n'est PAS le sujet reformulé. C'est la question qui surgit quand on perçoit la contradiction interne du sujet."},{q:"Dans la progression dialectique (thèse/antithèse/synthèse), la synthèse doit :",options:[{text:"Dépasser la contradiction en proposant un cadre nouveau qui intègre la vérité des deux parties.",correct:true},{text:"Confirmer la thèse du I après avoir réfuté l'antithèse du II.",correct:false},{text:"Présenter une troisième opinion neutre qui n'est ni pour, ni contre.",correct:false}],tip:"La synthèse hégélienne n'est pas un compromis ! Elle élève le débat à un niveau supérieur. Ex : liberté ET nécessité → liberté DANS la nécessité."},{q:"L'erreur du 'catalogue de citations' consiste à :",options:[{text:"Aligner des références sans les articuler à une argumentation personnelle cohérente.",correct:true},{text:"Citer trop peu d'auteurs dans une copie de 4 heures.",correct:false},{text:"Utiliser des citations de mémoire sans préciser la source exacte.",correct:false}],tip:"Une citation n'est qu'un outil. Elle doit être introduite, expliquée et mobilisée AU SERVICE d'une thèse. Sinon c'est du name-dropping."},{q:"Comment construire une définition philosophique rigoureuse d'un concept ?",options:[{text:"Distinguer les différents sens du mot, les articuler à des enjeux philosophiques, et montrer ce que le concept permet de penser.",correct:true},{text:"Commencer par la définition du dictionnaire Larousse, puis la critiquer.",correct:false},{text:"Choisir la définition du philosophe qu'on préfère et la défendre tout au long du devoir.",correct:false}],tip:"Une définition philosophique est toujours construite, jamais recopiée. Elle doit distinguer les sens (ex : liberté de / liberté pour) et cerner l'enjeu du sujet."},{q:"Quelle est la différence entre un 'exemple' et une 'illustration' en dissertation philo ?",options:[{text:"Un exemple sert à tester ou valider une thèse ; une illustration se contente de la rendre concrète sans l'argumenter davantage.",correct:true},{text:"Un exemple vient de la vie quotidienne, une illustration vient d'un texte philosophique.",correct:false},{text:"Les deux termes sont synonymes, l'un est juste plus soutenu que l'autre.",correct:false}],tip:"Préférez toujours l'exemple à l'illustration. Un exemple pense avec le philosophe : il montre pourquoi la thèse tient, pas seulement comment elle ressemble à du réel."},{q:"Quelle est la fonction de la 'concession' dans un devoir de philosophie ?",options:[{text:"Reconnaître ce que la position adverse a de vrai avant de montrer sa limite, pour renforcer sa propre thèse.",correct:true},{text:"Admettre qu'on a tort et adopter l'opinion du philosophe le plus célèbre sur la question.",correct:false},{text:"Faire une digression hors sujet pour montrer l'étendue de sa culture générale.",correct:false}],tip:"La concession est une marque de rigueur intellectuelle. Elle montre qu'on a envisagé l'objection la plus sérieuse. Structure : 'Certes… mais…' ou 'On pourrait objecter que… Cependant…'"},{q:"Un sujet porte sur 'le bonheur'. Laquelle de ces approches est la plus rigoureuse pour l'introduction ?",options:[{text:"Distinguer le bonheur comme état (eudaimonia) du plaisir comme sensation (hèdonè), puis poser la tension entre quête individuelle et conditions sociales.",correct:true},{text:"Citer une chanson ou un film célèbre sur le bonheur pour accrocher le correcteur dès la première ligne.",correct:false},{text:"Rappeler que tout le monde cherche le bonheur, ce qui prouve son importance universelle.",correct:false}],tip:"L'accroche philosophique est toujours préférable à la citation culturelle pop. Une définition qui distingue les sens crée immédiatement la tension du sujet."}];
+
+const DB_L3=[{q:"Hobbes : 'l'homme est un loup pour l'homme'. Quel philosophe s'oppose le plus directement à cette vision ?",options:[{text:"Rousseau : l'homme est naturellement bon, c'est la société et la propriété qui le corrompent.",correct:true},{text:"Nietzsche : l'homme dépasse sa nature par la volonté de puissance.",correct:false},{text:"Kant : l'homme est défini par sa raison, non sa nature animale.",correct:false}],tip:"Le duel Hobbes/Rousseau est fondamental en politique. Pour Hobbes, l'État contient la violence naturelle ; pour Rousseau, il l'engendre."},{q:"Popper critique l'inductivisme naïf. Quelle est sa thèse sur la scientificité ?",options:[{text:"Une théorie n'est scientifique que si elle est falsifiable, c'est-à-dire réfutable par l'expérience.",correct:true},{text:"La science est une construction sociale sans rapport avec la réalité objective.",correct:false},{text:"Toute connaissance vient de l'expérience et de l'accumulation d'observations.",correct:false}],tip:"Popper vs inductivisme : un cygne noir suffit à réfuter 'tous les cygnes sont blancs'. On ne prouve pas, on réfute. C'est la falsifiabilité qui distingue science et pseudoscience."},{q:"Aristote défend une éthique des vertus. En quoi diffère-t-il radicalement de Kant ?",options:[{text:"Aristote vise le bonheur (eudaimonia) par l'excellence des vertus ; Kant vise le devoir par la loi universelle, indépendamment du bonheur.",correct:true},{text:"Aristote est relativiste (chaque culture a ses vertus) tandis que Kant est universaliste.",correct:false},{text:"Aristote pense que la morale n'existe pas, tandis que Kant en fait la base de tout.",correct:false}],tip:"Éthique aristotélicienne = téléologique (vise une fin : le Bien). Éthique kantienne = déontologique (vise un devoir : la loi). Deux paradigmes irréconciliables."},{q:"Rawls propose un 'voile d'ignorance'. Quelle est l'intuition fondamentale ?",options:[{text:"Des principes de justice équitables sont ceux qu'on choisirait si on ne savait pas quelle place on occupera dans la société.",correct:true},{text:"La justice exige que tous les citoyens ignorent les lois pour ne pas en tirer profit.",correct:false},{text:"Une société juste est celle où personne ne sait rien pour éviter les conflits d'intérêts.",correct:false}],tip:"Rawls vs utilitarisme : le voile d'ignorance garantit l'impartialité. Derrière ce voile, on choisit des règles justes PAR PRÉCAUTION, car on pourrait être le plus défavorisé."},{q:"Sur le langage : Wittgenstein affirme 'Les limites de mon langage sont les limites de mon monde'. Quel philosophe défend une thèse opposée ?",options:[{text:"Bergson : la pensée intuitive dépasse et précède le langage, qui fige ce qui est vivant et mouvant.",correct:true},{text:"Saussure : le signe linguistique est arbitraire et donc ne peut pas limiter la pensée.",correct:false},{text:"Descartes : la pensée pure (cogito) précède tout langage et s'en passe entièrement.",correct:false}],tip:"Wittgenstein = le langage constitue la pensée. Bergson = la pensée intuitive (durée, élan vital) excède ce que le langage peut dire. Duel central en philo du langage."},{q:"Sur l'art : Platon expulse les poètes de la cité. Sur quel argument Aristote le réfute-t-il ?",options:[{text:"Aristote défend la catharsis : la tragédie purifie les passions du spectateur au lieu de les exciter dangereusement.",correct:true},{text:"Aristote pense que les poètes expriment la vérité historique des événements passés.",correct:false},{text:"Aristote croit que les poètes ont accès à une connaissance supérieure par l'inspiration divine.",correct:false}],tip:"Platon (Rép. X) : l'art imite une imitation, éloigne de la vérité. Aristote (Poétique) : la mimèsis + catharsis font de l'art un outil d'éducation morale."},{q:"Sur la religion : Marx dit que 'la religion est l'opium du peuple'. Quelle est la réponse de Durkheim ?",options:[{text:"Durkheim : la religion est un fait social qui crée la cohésion collective. Elle n'est pas une illusion mais un moyen de symboliser la société.",correct:true},{text:"Durkheim est d'accord avec Marx mais pense que la science peut remplacer la religion.",correct:false},{text:"Durkheim défend la religion comme accès à une vérité spirituelle transcendant la société.",correct:false}],tip:"Marx = la religion aliène et masque les rapports de production. Durkheim = elle est fonctionnellement nécessaire à la cohésion sociale. Deux socio-philosophies de la religion."},{q:"Sur la technique : Heidegger affirme que la technique moderne est dangereuse. Pourquoi s'oppose-t-il à Descartes ?",options:[{text:"Heidegger : la technique révèle le monde uniquement comme stock d'énergie exploitable (arraisonnement), dissimulant toute autre façon d'être au monde.",correct:true},{text:"Heidegger pense que la technique est dangereuse parce qu'elle crée des armes de guerre.",correct:false},{text:"Heidegger s'oppose à Descartes parce qu'il croit que l'homme ne peut jamais maîtriser la nature.",correct:false}],tip:"Descartes (Disc. de la Méthode) : la technique rend l'homme 'maître et possesseur de la nature'. Heidegger (La Question de la Technique) : ce 'Gestell' dissimule l'être et réduit le monde à une réserve."}];
+
+const DB_L7=[{q:"Dans cette intro, quelle est l'erreur rédhibitoire ?",context:"« Depuis la nuit des temps, les hommes se sont posé la question de la liberté. Il y a ceux qui pensent que l'homme est libre et ceux qui pensent qu'il ne l'est pas. Dans cette dissertation, nous allons voir que les deux sont possibles. »",options:[{text:"L'introduction ne problématise pas : elle constate un débat sans creuser le paradoxe ni formuler une vraie problématique.",correct:true},{text:"L'introduction cite trop de philosophes sans les nommer précisément.",correct:false},{text:"'Depuis la nuit des temps' est certes banal, mais le reste de l'intro est correct.",correct:false}],tip:"Triple erreur : hameçon banal, absence de définitions des termes, et annonce de plan sans problématique réelle. Un jury pénalise dès la première ligne."},{q:"Repérez l'erreur de raisonnement dans cette transition :",context:"« Nous avons vu que le travail aliène l'homme selon Marx. Mais Hegel pense le contraire. C'est pourquoi dans une deuxième partie, nous verrons une autre opinion. »",options:[{text:"La transition juxtapose sans articuler : elle ne montre pas la limite de la thèse précédente ni comment la suivante la dépasse.",correct:true},{text:"Nommer Marx et Hegel dans la même phrase crée une confusion d'auteurs.",correct:false},{text:"La transition est trop courte mais son contenu est philosophiquement correct.",correct:false}],tip:"Une transition doit : (1) synthétiser ce qu'on vient de montrer, (2) révéler sa limite, (3) annoncer comment la suite la dépasse. Pas de 'mais / en revanche' sans explication."},{q:"Cette définition contient un défaut grave. Lequel ?",context:"« La liberté, selon le Larousse, est le fait d'agir selon sa propre volonté. »",options:[{text:"Citer le Larousse en philosophie est une faute de méthode : on attend une définition conceptuelle construite à partir des enjeux philosophiques.",correct:true},{text:"La définition est trop courte : il faudrait au moins deux lignes pour être précis.",correct:false},{text:"La liberté ne concerne pas la volonté mais la raison, donc la définition est fausse.",correct:false}],tip:"En philo, une définition s'élabore en distinguant les sens du mot et en cernant l'enjeu philosophique. On peut citer un philosophe, JAMAIS un dictionnaire généraliste."},{q:"Quel est le problème de ce plan annoncé en introduction ?",context:"« Dans un premier temps, nous verrons que oui. Dans un second temps, nous verrons que non. Dans un troisième temps, nous nuancerons. »",options:[{text:"Le plan 'oui / non / nuance' est mécanique : il esquive la problématique réelle et ne structure pas une progression logique de la pensée.",correct:true},{text:"Il ne faut pas annoncer trois parties mais seulement deux en terminale.",correct:false},{text:"Le plan est correct dans sa structure, mais les termes 'oui' et 'non' sont trop familiers.",correct:false}],tip:"Un bon plan progresse : d'une position à sa réfutation, puis à un dépassement qualitatif supérieur. 'Oui/Non/Nuance' n'est pas une progression, c'est un évitement."},{q:"Identifiez l'erreur dans cet argument :",context:"« La conscience prouve que l'homme est libre, car si l'homme n'était pas libre, il n'aurait pas de conscience. »",options:[{text:"C'est un raisonnement circulaire (pétition de principe) : la conclusion est présupposée dans la prémisse sans être démontrée.",correct:true},{text:"L'argument est valide mais il faudrait citer Descartes pour l'étayer.",correct:false},{text:"La conscience et la liberté ne sont pas liées, donc la prémisse est fausse.",correct:false}],tip:"La pétition de principe est l'une des erreurs logiques les plus fréquentes en dissertation. Elle consiste à prouver A par A (déguisé). Le jury la sanctionne sévèrement."},{q:"Quelle est la faiblesse de cette conclusion ?",context:"« En conclusion, nous avons vu dans un premier temps que le bonheur est possible, dans un deuxième temps qu'il est difficile, et dans un troisième temps qu'il dépend de chaque individu. »",options:[{text:"La conclusion ne fait que résumer les parties sans produire de réponse philosophique à la problématique. Elle n'ouvre pas de perspective.",correct:true},{text:"La conclusion est trop courte et devrait développer un quatrième argument.",correct:false},{text:"Elle parle de 'bonheur possible' ce qui contredit l'idée que le bonheur est difficile.",correct:false}],tip:"Une bonne conclusion doit : (1) répondre précisément à la problématique, (2) montrer le dépassement opéré, (3) ouvrir sur une question plus large. Le résumé seul est insuffisant."},{q:"Repérez l'erreur de méthode dans cet usage d'auteur :",context:"« Comme l'a dit Nietzsche : 'Ce qui ne me tue pas me rend plus fort', donc la souffrance est nécessaire au développement humain. »",options:[{text:"La citation est utilisée comme preuve sans être expliquée ni contextualisée dans la philosophie de Nietzsche.",correct:true},{text:"Nietzsche est un philosophe trop controversé pour être cité dans une dissertation de terminale.",correct:false},{text:"La citation est trop courte pour constituer un argument philosophique solide.",correct:false}],tip:"Une citation doit être : introduite (contexte), expliquée (sens dans l'œuvre), puis articulée à la thèse. Jamais posée comme évidence. Ici Nietzsche parle de la 'volonté de puissance', pas de la souffrance en général."},{q:"Quelle est l'erreur structurelle dans cette argumentation ?",context:"« L'art imite la réalité (Platon). Mais l'art crée sa propre réalité (Hegel). Donc l'art est à la fois une imitation et une création. »",options:[{text:"La conclusion additionne les deux thèses sans montrer comment elles s'articulent : ce n'est pas une synthèse, c'est une contradiction non résolue.",correct:true},{text:"Citer Platon et Hegel ensemble est anachronique et philosophiquement problématique.",correct:false},{text:"L'argument est correct mais trop rapide : il faudrait développer chaque thèse en un paragraphe.",correct:false}],tip:"La synthèse ne consiste pas à dire 'les deux ont raison'. Il faut montrer à quel niveau plus profond se résolvent les contradictions. Ex : l'art révèle une vérité que la réalité cache (lecture hégélienne qui dépasse Platon)."}];
+
+const DB_L8=[{subject:"L'intelligence artificielle peut-elle remplacer la raison humaine ?",hook:"Elon Musk et Neuralink : fusionner cerveau humain et puce pour ne pas être dépassé par l'IA.",paradox:"Si l'IA surpasse l'homme en calcul (Ratio), elle reste incapable d'un jugement moral autonome (Raisonnable).",duel:"Heidegger (la technique déshumanisante) vs Kant (la dignité de l'être raisonnable).",standing:"Distinguer le CALCUL (quantitatif, formel) de la PENSÉE (qualitative, normative).",tip:"Sujet phare 2026 sur Technique et Raison. Attention à ne pas confondre intelligence (efficacité) et raison (normativité)."},{subject:"L'État a-t-il le droit de décider de notre bonheur ?",hook:"Le 'Ministère de la Solitude' créé au Royaume-Uni pour traiter le mal-être social.",paradox:"L'État doit assurer les conditions du bonheur (Justice), mais l'imposer serait une tyrannie 'bienveillante'.",duel:"Hobbes (la sécurité avant tout) vs Mill (la liberté individuelle et l'autonomie).",standing:"Mobiliser le repère LÉGALITÉ (loi écrite) vs LÉGITIMITÉ (fondement moral de la loi).",tip:"Sujet politique très probable sur Autorité et Liberté. Ne pas réduire l'État à la seule coercition."},{subject:"Le travail est-il encore une valeur dans un monde automatisé ?",hook:"Le 'Quiet Quitting' : la grande démission silencieuse remet en cause la centralité de la carrière.",paradox:"Le travail est contrainte pour survivre, mais il reste le médiateur essentiel de la conscience de soi.",duel:"Marx (l'aliénation par le système capitaliste) vs Hegel (le travail comme libération de l'Esprit).",standing:"Opposer la NÉCESSITÉ biologique (besoin) à la LIBERTÉ créatrice (œuvre, réalisation de soi).",tip:"Lien parfait entre Travail, Technique et Existence. Mobilisez aussi Bergson sur le 'Homo faber'."},{subject:"La conscience est-elle un obstacle à l'action ?",hook:"Le sportif de haut niveau perd ses moyens quand il pense trop à ses gestes — le 'trac' cognitif.",paradox:"La conscience éclaire et dirige l'action, mais elle peut aussi la paralyser par l'excès de réflexion.",duel:"Bergson (l'intuition et l'élan vital) vs Sartre (la conscience comme lucidité nécessaire).",standing:"Distinguer CONSCIENCE RÉFLÉCHIE (analytique, distante) et CONSCIENCE IMMÉDIATE (intuitive, engagée).",tip:"Excellent sujet pour croiser Conscience, Liberté et Habitude. Pensez à Ryle et le 'knowing how'."},{subject:"Peut-on se mentir à soi-même ?",hook:"L'auto-justification : comment nos cerveaux fabriquent des récits pour protéger notre ego (psychologie sociale).",paradox:"Pour se mentir, il faut à la fois savoir la vérité (pour la cacher) et ne pas la savoir (pour y croire).",duel:"Freud (l'inconscient rend le mensonge à soi possible) vs Sartre (la mauvaise foi est toujours consciente).",standing:"Utiliser le repère EN ACTE vs EN PUISSANCE : le sujet sait en puissance ce qu'il nie en acte.",tip:"Sujet classique sur Conscience et Inconscient. La contradiction logique est le cœur du paradoxe à déployer."},{subject:"La liberté est-elle compatible avec l'existence de lois ?",hook:"La désobéissance civile : Thoreau refuse de payer ses impôts pour protester contre l'esclavage.",paradox:"La loi limite apparemment la liberté (contrainte), mais elle la rend possible en protégeant chacun de l'arbitraire des autres.",duel:"Rousseau (la loi comme expression de la volonté générale = liberté vraie) vs Stirner (toute loi est oppression de l'individu souverain).",standing:"Distinguer LIBERTÉ NÉGATIVE (absence de contrainte) et LIBERTÉ POSITIVE (capacité d'agir selon sa propre loi).",tip:"Sujet récurrent sur Liberté et Politique. La tension loi/liberté se résout par la distinction des deux sens de la liberté."},{subject:"Avons-nous des devoirs envers la nature ?",hook:"Les droits accordés aux fleuves en Nouvelle-Zélande et en Inde : la nature comme sujet juridique.",paradox:"Si la nature n'a pas de volonté ni de conscience, peut-on lui devoir quoi que ce soit — ou n'est-ce qu'un devoir envers les générations futures ?",duel:"Jonas (le 'principe responsabilité' : devoir de préservation pour l'avenir) vs Descartes (la nature est une machine que l'homme doit maîtriser).",standing:"Utiliser le repère MOYEN vs FIN : traite-t-on la nature comme moyen ou comme fin en soi ?",tip:"Sujet éthique environnemental en forte hausse. Distinguer éthique anthropocentrique et écocentrique."},{subject:"L'art doit-il être beau ?",hook:"Maurizio Cattelan : une banane scotchée au mur vendue 120 000 € — est-ce de l'art ?",paradox:"L'art contemporain déconstruit la beauté (ready-made, art conceptuel), mais sans critère, peut-on encore distinguer l'art du non-art ?",duel:"Kant (le beau est un plaisir désintéressé, universel et sans concept) vs Hegel (l'art est la manifestation sensible de l'Idée — le beau n'est qu'un moyen).",standing:"Distinguer le BEAU (formel, sensible) de la VÉRITÉ (conceptuelle) : ce que l'art montre dépasse-t-il ce qu'il représente ?",tip:"Sujet Art incontournable. La banane de Cattelan est l'hameçon parfait. La question du critère est la clé de la problématique."},{subject:"Faut-il avoir peur de la mort ?",hook:"Le transhumanisme (Aubrey de Grey, Kurzweil) et la promesse de l'immortalité biologique par la technologie.",paradox:"La mort donne du sens à la vie en la rendant finie et irremplaçable. Sans elle, l'existence serait-elle encore possible ?",duel:"Épicure ('la mort n'est rien pour nous') vs Heidegger (l'être-pour-la-mort comme révélateur de l'authenticité).",standing:"Distinguer la PEUR (émotion irrationnelle face à l'inconnu) de l'ANGOISSE existentielle (conscience de la finitude comme structure de l'être).",tip:"Sujet Existence phénoménologique classique. L'argument épicurien (argument de la symétrie) est le plus fort à connaître et à discuter."},{subject:"La vérité a-t-elle besoin d'être démontrée ?",hook:"L'essor des deepfakes et de la désinformation : quand le faux devient indiscernable du vrai, la démonstration devient vitale.",paradox:"Certaines vérités s'imposent sans démonstration (évidences, axiomes), mais sans démonstration, peut-on distinguer la vérité de la croyance ?",duel:"Descartes (les vérités claires et distinctes n'ont pas besoin de démonstration) vs Popper (toute vérité scientifique est provisoire et doit pouvoir être réfutée).",standing:"Distinguer VÉRITÉ FORMELLE (logique, mathématique : démontrée) de VÉRITÉ FACTUELLE (empirique : testée, falsifiable, jamais certaine).",tip:"Sujet Connaissance très probable. L'hameçon deepfake est percutant et actuel. La distinction Descartes/Popper permet une synthèse solide."}];
+
+/* ================================================================
+   ÉTAT GLOBAL
+================================================================ */
+let globalStats={totalQ:0,totalCorrect:0,bestStreak:0,sessions:0,bestScores:{0:null,1:null,3:null,7:null,8:null}};
+
+let state={level:null,db:[],idx:0,score:0,l8step:1,streak:0,bestStreak:0,errors:[],isReview:false,totalTime:0,qStartTime:0,answered:0,correct:0,timerID:null,timerLeft:30,answered_flag:false};
+
+const TIMER_DURATION=30,TIMER_CIRC=88;
+
+/* ================================================================
+   NAV
+================================================================ */
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
+function goMenu(){stopTimer();showScreen('screen-menu');saveStats();}
+
+function startLevel(lv){
+    state={level:lv,db:[],idx:0,score:0,l8step:1,streak:0,bestStreak:0,errors:[],isReview:false,totalTime:0,qStartTime:0,answered:0,correct:0,timerID:null,timerLeft:TIMER_DURATION,answered_flag:false};
+    document.getElementById('progress-fill').style.width='0%';
+    document.getElementById('review-banner').classList.remove('visible');
+    switch(lv){case 0:state.db=DB_L0;break;case 1:state.db=DB_L1;break;case 3:state.db=DB_L3;break;case 7:state.db=DB_L7;break;case 8:state.db=DB_L8;break;}
+    globalStats.sessions++;
+    showScreen('screen-game');
+    renderQuestion();
+}
+
+function startReview(){
+    if(state.errors.length===0)return;
+    const errs=[...state.errors];
+    state={level:state.level,db:errs.map(e=>e.item),idx:0,score:0,l8step:1,streak:0,bestStreak:0,errors:[],isReview:true,totalTime:0,qStartTime:0,answered:0,correct:0,timerID:null,timerLeft:TIMER_DURATION,answered_flag:false};
+    document.getElementById('progress-fill').style.width='0%';
+    document.getElementById('review-banner').classList.add('visible');
+    showScreen('screen-game');
+    renderQuestion();
+}
+
+/* ================================================================
+   TIMER
+================================================================ */
+function startTimer(){
+    stopTimer();
+    state.timerLeft=TIMER_DURATION;state.answered_flag=false;state.qStartTime=Date.now();
+    updateTimerUI(TIMER_DURATION);
+    state.timerID=setInterval(()=>{
+        if(state.answered_flag){stopTimer();return;}
+        state.timerLeft--;updateTimerUI(state.timerLeft);
+        if(state.timerLeft<=0){stopTimer();handleTimeout();}
+    },1000);
+}
+function stopTimer(){if(state.timerID){clearInterval(state.timerID);state.timerID=null;}}
+function updateTimerUI(t){
+    const offset=TIMER_CIRC*(1-t/TIMER_DURATION);
+    const fill=document.getElementById('timer-fill'),num=document.getElementById('timer-num');
+    if(!fill||!num)return;
+    fill.style.strokeDashoffset=offset;
+    fill.classList.toggle('urgent',t<=8);num.textContent=t;num.classList.toggle('urgent',t<=8);
+}
+function handleTimeout(){
+    state.answered_flag=true;
+    document.querySelectorAll('.opt-btn').forEach(b=>{b.disabled=true;b.style.opacity='.4';b.style.cursor='default';});
+    state.errors.push({item:state.db[state.idx],type:'timeout'});
+    breakStreak();state.answered++;globalStats.totalQ++;
+    showFeedback('timeout',"Temps écoulé — La cour passe à l'instruction suivante.",null);
+}
+
+/* ================================================================
+   HUD
+================================================================ */
+function updateHUD(){
+    const total=state.db.length;
+    document.getElementById('hud-cur').textContent=state.idx+1;
+    document.getElementById('hud-max').textContent=total;
+    document.getElementById('hud-score').textContent=state.score;
+    document.getElementById('progress-fill').style.width=((state.idx/total)*100)+'%';
+}
+function updateStreakUI(){
+    const el=document.getElementById('hud-streak'),cnt=document.getElementById('streak-count');
+    cnt.textContent=state.streak;
+    if(state.streak>=2){el.classList.add('active');el.classList.remove('pulse');void el.offsetWidth;el.classList.add('pulse');}
+    else{el.classList.remove('active');}
+}
+function incrementStreak(){state.streak++;if(state.streak>state.bestStreak)state.bestStreak=state.streak;if(state.streak>globalStats.bestStreak)globalStats.bestStreak=state.streak;updateStreakUI();}
+function breakStreak(){state.streak=0;updateStreakUI();}
+
+/* ================================================================
+   RENDER
+================================================================ */
+function renderQuestion(){
+    const zone=document.getElementById('quiz-zone');zone.innerHTML='';
+    const labels={0:'N0 · BOUSSOLE',1:'N1 · ANALYSE',3:'N3 · DUELS',7:'N7 · CODE PÉNAL',8:'N8 · GRAND VERDICT'};
+    document.getElementById('card-label').textContent=labels[state.level]||'';
+    updateHUD();startTimer();
+    if(state.level===8)renderL8(zone);else renderQCM(zone);
+}
+
+function renderQCM(zone){
+    const item=state.db[state.idx];
+    document.getElementById('card-subject').textContent=item.q;
+    if(state.level===7&&item.context){
+        const ctx=document.createElement('div');
+        ctx.style.cssText='background:var(--fond-deep);border:1px solid var(--bord);border-left:3px solid var(--rasp-dim);border-radius:4px;padding:1rem 1.25rem;margin-bottom:1.25rem;font-style:italic;font-size:.78rem;color:var(--encre-dim);line-height:1.65';
+        ctx.innerHTML='<span style="font-family:JetBrains Mono,monospace;font-size:.5rem;letter-spacing:.2em;text-transform:uppercase;color:var(--rasp-dim);display:block;margin-bottom:.5rem">Extrait à analyser</span>'+escHtml(item.context);
+        zone.appendChild(ctx);
+    }
+    const opts=shuffled([...item.options]);
+    const list=document.createElement('div');list.className='options-list';
+    opts.forEach(opt=>{
+        const btn=document.createElement('button');btn.className='opt-btn';
+        btn.innerHTML=`<span class="opt-tag">${tagForLevel(state.level)}</span>${escHtml(opt.text)}`;
+        btn.onclick=()=>handleQCM(opt.correct,item.tip,btn,list);
+        list.appendChild(btn);
+    });
+    zone.appendChild(list);
+}
+
+function tagForLevel(lv){return{0:'Définition',1:'Méthode',3:'Duel',7:'Erreur détectée'}[lv]||'Option';}
+
+function handleQCM(correct,tip,btn,list){
+    if(state.answered_flag)return;
+    state.answered_flag=true;stopTimer();
+    const elapsed=Date.now()-state.qStartTime;state.totalTime+=elapsed;state.answered++;
+    list.querySelectorAll('.opt-btn').forEach(b=>{b.disabled=true;b.style.opacity='.5';b.style.cursor='default';});
+    btn.style.opacity='1';
+    if(correct){
+        const pts=bonusPts(elapsed);state.score+=pts;state.correct++;globalStats.totalCorrect++;
+        btn.style.border='1px solid var(--vert-pale)';btn.style.background='rgba(58,125,0,.1)';
+        incrementStreak();showFeedback('correct','Exact. Raisonnement validé.',tip,pts);
+    }else{
+        btn.style.border='1px solid var(--rasp)';btn.style.background='rgba(196,0,93,.08)';
+        state.errors.push({item:state.db[state.idx],type:'wrong'});breakStreak();
+        showFeedback('wrong','Erreur de jugement. Relisez votre analyse.',tip);
+    }
+    globalStats.totalQ++;
+}
+
+function renderL8(zone){
+    const item=state.db[state.idx];
+    if(state.l8step===1)document.getElementById('card-subject').textContent='« '+item.subject+' »';
+    const stepNames=['HAMEÇON','PARADOXE','DUEL','STANDING'];
+    const dots=document.createElement('div');dots.className='step-indicator';
+    for(let i=1;i<=4;i++){const d=document.createElement('div');d.className='step-dot'+(i<state.l8step?' done':i===state.l8step?' active':'');dots.appendChild(d);}
+    zone.appendChild(dots);
+    const title=document.createElement('p');title.className='etape-title';
+    title.innerHTML=`Étape <strong>${state.l8step}/4</strong> — Choisissez le bon <strong>${stepNames[state.l8step-1]}</strong>`;
+    zone.appendChild(title);
+    const correctValues=[item.hook,item.paradox,item.duel,item.standing];
+    const distractors=[["Depuis la nuit des temps, les hommes se posent cette question.","Il y a des gens qui pensent que oui et d'autres que non."],["Le sujet est difficile car il y a des arguments pour et contre.","On peut répondre oui ou non selon son point de vue."],["Citer Descartes deux fois sans lien avec le sujet.","Faire un catalogue de noms sans montrer l'opposition."],["Utiliser une définition du Larousse pour paraître précis.","Faire des phrases simples et éviter les termes compliqués."]];
+    const correct=correctValues[state.l8step-1];
+    const opts=shuffled([correct,...distractors[state.l8step-1]]);
+    const list=document.createElement('div');list.className='options-list';
+    opts.forEach(opt=>{
+        const btn=document.createElement('button');btn.className='opt-btn';
+        btn.innerHTML=`<span class="opt-tag">${stepNames[state.l8step-1]}</span>${escHtml(opt)}`;
+        btn.onclick=()=>handleL8(opt===correct,item,btn,list,correct);
+        list.appendChild(btn);
+    });
+    zone.appendChild(list);
+}
+
+function handleL8(correct,item,btn,list,correctText){
+    if(state.answered_flag)return;
+    const elapsed=Date.now()-state.qStartTime;state.totalTime+=elapsed;state.answered++;
+    list.querySelectorAll('.opt-btn').forEach(b=>{b.disabled=true;b.style.opacity='.5';b.style.cursor='default';});
+    btn.style.opacity='1';
+    state.answered_flag=true;stopTimer();
+    if(correct){
+        const pts=Math.max(10,Math.round(bonusPts(elapsed)*.75));state.score+=pts;state.correct++;globalStats.totalCorrect++;
+        btn.style.border='1px solid var(--vert-pale)';btn.style.background='rgba(58,125,0,.1)';
+        document.getElementById('hud-score').textContent=state.score;
+        incrementStreak();
+        if(state.l8step<4){
+            state.l8step++;
+            const qz=document.getElementById('quiz-zone');qz.innerHTML='';
+            const msg=document.createElement('div');
+            msg.style.cssText='text-align:center;padding:1.5rem;font-family:JetBrains Mono,monospace;font-size:.65rem;letter-spacing:.2em;color:var(--vert);font-weight:700;animation:fadeUp .3s ease-out';
+            msg.innerHTML=`✓ ÉTAPE VALIDÉE <span style="margin-left:.5rem;color:var(--rasp)">+${pts} pts</span>`;
+            qz.appendChild(msg);setTimeout(()=>renderQuestion(),700);
+        }else{
+            globalStats.totalQ++;showFeedback('correct','Plaidoirie parfaite ! Copie 20/20 construite.',item.tip,pts);
+        }
+    }else{
+        btn.style.border='1px solid var(--rasp)';btn.style.background='rgba(196,0,93,.08)';
+        const stepNames=['HAMEÇON','PARADOXE','DUEL','STANDING'];
+        const tipMsg=`La bonne réponse pour l'étape ${stepNames[state.l8step-1]} : « ${correctText} » — ${item.tip}`;
+        state.errors.push({item,type:'wrong'});breakStreak();globalStats.totalQ++;
+        showFeedback('wrong','Défaut de structure. La copie perd son standing.',tipMsg);
+    }
+}
+
+/* ================================================================
+   BONUS PTS
+================================================================ */
+function bonusPts(ms){const s=ms/1000;if(s<8)return 30;if(s<15)return 25;return 20;}
+
+/* ================================================================
+   FEEDBACK
+================================================================ */
+function showFeedback(type,msg,tip,pts){
+    document.getElementById('hud-score').textContent=state.score;
+    const panel=document.createElement('div');
+    const cls={correct:'feedback-correct',wrong:'feedback-wrong',timeout:'feedback-timeout'};
+    const lbl={correct:'✓ VERDICT : RECEVABLE',wrong:'✗ VERDICT : IRRECEVABLE',timeout:'⏱ TEMPS ÉCOULÉ'};
+    panel.className='feedback-panel '+(cls[type]||'feedback-wrong');
+    const status=document.createElement('p');status.className='feedback-status';status.textContent=lbl[type]||'';
+    const message=document.createElement('p');message.className='feedback-msg';
+    message.innerHTML=escHtml(msg)+(pts?`<span class="pts-toast">+${pts} pts</span>`:'');
+    panel.appendChild(status);panel.appendChild(message);
+    if(tip){const tipEl=document.createElement('p');tipEl.className='feedback-tip';tipEl.innerHTML='<strong>Verdict du Maître :</strong> '+escHtml(tip);panel.appendChild(tipEl);}
+    const nextBtn=document.createElement('button');nextBtn.className='btn-next';
+    nextBtn.textContent=state.idx+1<state.db.length?'→ Dossier suivant':'⚖ Délibéré final';
+    nextBtn.onclick=nextQuestion;panel.appendChild(nextBtn);
+    document.getElementById('quiz-zone').appendChild(panel);
+    panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+/* ================================================================
+   NEXT Q
+================================================================ */
+function nextQuestion(){
+    state.idx++;state.l8step=1;state.answered_flag=false;
+    if(state.idx<state.db.length){renderQuestion();document.getElementById('screen-game').scrollIntoView({behavior:'smooth',block:'start'});}
+    else showEndScreen();
+}
+
+/* ================================================================
+   END
+================================================================ */
+function showEndScreen(){
+    stopTimer();
+    document.getElementById('progress-fill').style.width='100%';
+    const lv=state.level;
+    if(globalStats.bestScores[lv]===null||state.score>globalStats.bestScores[lv])globalStats.bestScores[lv]=state.score;
+    saveStats();
+    const pct=state.answered>0?state.correct/state.answered:0;
+    const avgTime=state.answered>0?Math.round(state.totalTime/state.answered/1000):0;
+    let medal,verdictText;
+    if(pct>=.9){medal='🔱';verdictText='Grand Maître du Tribunal. Maîtrise souveraine du programme. La cour vous décerne la plus haute distinction. Sapere Aude !';}
+    else if(pct>=.75){medal='⚖️';verdictText='Excellent défenseur. Votre argumentation est solide. Quelques verrous méritent encore votre attention — relisez les Verdicts du Maître.';}
+    else if(pct>=.5){medal='📜';verdictText='La cour reconnaît votre effort. La base est posée, mais la synthèse manque encore de rigueur. Retournez travailler les niveaux fondamentaux.';}
+    else{medal='🪶';verdictText='Dossier insuffisant. Le Tribunal vous invite à reprendre les notions fondamentales avant de plaider à nouveau.';}
+    document.getElementById('end-medal').textContent=medal;
+    document.getElementById('end-pts').textContent=`${state.score} pts · ${state.correct}/${state.answered} correctes`;
+    document.getElementById('end-verdict').textContent=verdictText;
+    document.getElementById('end-correct').textContent=state.correct;
+    document.getElementById('end-streak').textContent=state.bestStreak+'🔥';
+    document.getElementById('end-time').textContent=avgTime+'s';
+    const errCount=state.errors.length;
+    document.getElementById('error-count').textContent=errCount;
+    document.getElementById('btn-review').disabled=errCount===0;
+    showScreen('screen-end');
+}
+
+/* ================================================================
+   SAVE STATS / SHARE
+================================================================ */
+function saveStats(){
+    document.getElementById('stat-total-q').textContent=globalStats.totalQ;
+    document.getElementById('stat-correct').textContent=globalStats.totalCorrect;
+    document.getElementById('stat-best-streak').textContent=globalStats.bestStreak;
+    document.getElementById('stat-sessions').textContent=globalStats.sessions;
+    [0,1,3,7,8].forEach(lv=>{
+        const el=document.getElementById('best-'+lv);if(!el)return;
+        const best=globalStats.bestScores[lv];
+        if(best!==null){el.textContent=best+' pts';el.classList.add('has-score');}
+    });
+}
+
+function shareScore(){
+    const names={0:'N0 Boussole',1:'N1 Analyse',3:'N3 Duels',7:'N7 Code Pénal',8:'N8 Grand Verdict'};
+    const pct=state.answered>0?Math.round(state.correct/state.answered*100):0;
+    const txt=`🏛️ Le Tribunal de la Philo — Bac 2026\n${names[state.level]||'?'} · ${state.score} pts · ${pct}% · Streak ${state.bestStreak}🔥\n\nSapere Aude !`;
+    if(navigator.clipboard){navigator.clipboard.writeText(txt).then(showShareToast);}
+    else{const ta=document.createElement('textarea');ta.value=txt;ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);showShareToast();}
+}
+function showShareToast(){const t=document.getElementById('share-toast');t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+/* ================================================================
+   UTILS
+================================================================ */
+function shuffled(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
+function escHtml(str){return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+// Init
+saveStats();
+</script>
+</body>
+</html>
