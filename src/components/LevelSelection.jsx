@@ -27,6 +27,30 @@ const levels = [
     desc: 'Faites dialoguer les maîtres de la pensée.'
   },
   { 
+    id: 4, 
+    badge: 'N4 · Dossiers', 
+    title: "Analyse de Textes", 
+    icon: <FileText size={24} />,
+    color: 'var(--rasp-pale)',
+    desc: 'Déconstruisez les arguments des grands textes.'
+  },
+  { 
+    id: 5, 
+    badge: 'N5 · Paradoxes', 
+    title: "Le Laboratoire", 
+    icon: <Target size={24} />,
+    color: 'var(--primary)',
+    desc: 'Résolvez les impasses logiques de la pensée.'
+  },
+  { 
+    id: 6, 
+    badge: 'N6 · Le Jury', 
+    title: "Simulation d'Objections", 
+    icon: <Gavel size={24} />,
+    color: 'var(--azur)',
+    desc: 'Apprenez à répondre aux critiques du tribunal.'
+  },
+  { 
     id: 7, 
     badge: 'N7 · Code Pénal', 
     title: 'Traque aux Erreurs de copie', 

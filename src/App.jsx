@@ -11,6 +11,8 @@ function App() {
   const [level, setLevel] = useState('Terminale');
   const [isSearching, setIsSearching] = useState(false);
   
+  const [selectedLevel, setSelectedLevel] = useState(0);
+  
   // Mock User Session for Priority Engine
   const [session, setSession] = useState({
     isNewUser: false,
@@ -24,11 +26,11 @@ function App() {
 
   const renderView = () => {
     switch (activeRoute) {
-      case 'home': return <Home level={level} session={session} daysToExam={daysToExam} setActiveRoute={setActiveRoute} />;
-      case 'quiz': return <QuizEngine level={level === 'Terminale' ? 'bac-philo-2024' : 'n0'} />;
+      case 'home': return <Home level={level} session={session} daysToExam={daysToExam} setActiveRoute={setActiveRoute} onSelectLevel={(lvl) => { setSelectedLevel(lvl); setActiveRoute('quiz'); }} />;
+      case 'quiz': return <QuizEngine level={selectedLevel} />;
       case 'anthologie': return <Anthologie />;
       case 'methode': return <Methode />;
-      default: return <Home />;
+      default: return <Home onSelectLevel={(lvl) => { setSelectedLevel(lvl); setActiveRoute('quiz'); }} />;
     }
   };
 

@@ -1,8 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Gavel, Clock, Trophy, BookOpen, Zap, Target, Star, AlertCircle, PlayCircle } from 'lucide-react';
+import LevelSelection from './LevelSelection';
 
-export default function Home({ level, session, daysToExam, setActiveRoute }) {
+export default function Home({ level, session, daysToExam, setActiveRoute, onSelectLevel }) {
   // 🧠 Rule-based Priority Logic
   const getTopWidget = () => {
     if (session.isNewUser) {
@@ -158,6 +159,15 @@ export default function Home({ level, session, daysToExam, setActiveRoute }) {
             </div>
           ))}
         </div>
+      </section>
+
+      {/* 🧭 Level Selection Grid */}
+      <section style={{ maxWidth: '1400px', margin: '6rem auto', padding: '0 1rem' }}>
+        <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+          <h2 className="font-display">Choisir votre <em className="text-primary italic">Champ de Bataille</em></h2>
+          <p className="font-mono coach-msg" style={{ marginTop: '0.5rem' }}>DÉPLOIEMENT_COGNITIF // CHOIX_DU_NIVEAU</p>
+        </div>
+        <LevelSelection onSelect={onSelectLevel} />
       </section>
 
       {/* ⚖️ Hero-Style discovery block */}

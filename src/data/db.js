@@ -683,3 +683,68 @@ export const DB_L8 = [
     tip: "Sujet sur la Conscience et la Morale. Très fréquent au baccalauréat."
   }
 ];
+
+export const DB_L4 = [
+  {
+    q: "Dans ce texte de Mill sur la liberté, quel est l'argument central contre la censure ?",
+    context: "« Si toute l'humanité moins un seul était d'un avis, et qu'un seul fût d'un avis contraire, l'humanité n'aurait pas plus de droit de faire taire cette personne que celle-ci n'en aurait de faire taire l'humanité. »",
+    options: [
+      { text: "La vérité profite de la confrontation : faire taire une opinion, c'est voler l'humanité d'une chance de corriger une erreur.", correct: true },
+      { text: "L'opinion majoritaire est toujours suspecte car elle tend vers la tyrannie de la coutume.", correct: false },
+      { text: "La liberté d'expression est un droit divin que nul ne peut entraver sans commettre un péché.", correct: false }
+    ],
+    tip: "Pour Mill, même une opinion fausse est utile car elle oblige la vérité à se justifier et à rester 'vivante'."
+  },
+  {
+    q: "Identifiez le présupposé dans cette thèse de Descartes :",
+    context: "« Je décidai de feindre que toutes les choses qui m'étaient jamais entrées en l'esprit n'étaient non plus vraies que les illusions de mes songes. »",
+    options: [
+      { text: "Il est possible de séparer radicalement la pensée de la réalité matérielle pour l'analyser.", correct: true },
+      { text: "Tous nos rêves sont nécessairement faux et sans rapport avec la réalité.", correct: false },
+      { text: "La raison est incapable de distinguer le vrai du faux sans l'aide de Dieu.", correct: false }
+    ],
+    tip: "C'est le doute hyperbolique. Il présuppose que la pensée peut se prendre elle-même pour objet d'étude."
+  }
+];
+
+export const DB_L5 = [
+  {
+    q: "Paradoxe de la Liberté : 'L'homme est condamné à être libre'. Pourquoi est-ce un paradoxe chez Sartre ?",
+    options: [
+      { text: "Parce que la liberté est une fatalité dont on ne peut s'évader : ne pas choisir est encore un choix.", correct: true },
+      { text: "Parce que la liberté rend malheureux alors qu'elle devrait rendre heureux.", correct: false },
+      { text: "Parce que l'homme est libre en théorie mais esclave de ses gènes en pratique.", correct: false }
+    ],
+    tip: "L'existence précède l'essence. Nous sommes jetés dans le monde sans but, donc nous devons inventer notre propre sens."
+  },
+  {
+    q: "Le paradoxe du 'Droit du plus fort' (Rousseau) montre que :",
+    options: [
+      { text: "La force ne fait pas droit : dès que la force cesse, l'obéissance n'est plus un devoir mais une nécessité subie.", correct: true },
+      { text: "Le plus fort a toujours raison parce que la nature favorise les meilleurs.", correct: false },
+      { text: "La justice n'est qu'un mot pour masquer la violence des dominants.", correct: false }
+    ],
+    tip: "Si on obéit par force, on n'obéit pas par devoir. La légitimité exige un consentement libre."
+  }
+];
+
+export const DB_L6 = [
+  {
+    q: "Le jury objecte : 'Votre définition de l'art exclut les œuvres contemporaines qui ne cherchent pas le beau'. Comment répliquer ?",
+    options: [
+      { text: "En distinguant le 'Beau' classique (harmonie) du 'Vrai' artistique (expression d'une pensée ou d'une époque).", correct: true },
+      { text: "En affirmant que l'art contemporain n'est pas du véritable art car il manque de technique.", correct: false },
+      { text: "En disant que la beauté est subjective et que tout peut être considéré comme beau.", correct: false }
+    ],
+    tip: "Utilisez le repère 'Esthétique / Épistémique'. L'art peut viser la connaissance ou la provocation plutôt que le plaisir visuel."
+  },
+  {
+    q: "Le jury objecte : 'Si tout est déterminé, alors la justice est inutile puisqu'on ne peut punir un criminel non responsable'. Réponse ?",
+    options: [
+      { text: "Défendre la justice comme protection sociale (utilitarisme) plutôt que comme punition morale.", correct: true },
+      { text: "Admettre que la justice est une illusion nécessaire pour maintenir l'ordre.", correct: false },
+      { text: "Prétendre que l'homme a une petite part de liberté mystérieuse qui échappe à la science.", correct: false }
+    ],
+    tip: "C'est l'approche de Spinoza ou des neurosciences : on soigne ou on enferme non par haine, mais pour protéger le corps social."
+  }
+];

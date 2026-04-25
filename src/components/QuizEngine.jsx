@@ -22,8 +22,12 @@ export default function QuizEngine({ level, onBack }) {
   // --- Adaptive Logic: Selective Pool ---
   const fullDb = useMemo(() => {
     switch(level) {
-      case 'bac-philo-2024': return DB.DB_L0;
-      case 'n0': return DB.DB_L1;
+      case 0: return DB.DB_L0;
+      case 1: return DB.DB_L1;
+      case 3: return DB.DB_L3;
+      case 4: return DB.DB_L4;
+      case 5: return DB.DB_L5;
+      case 6: return DB.DB_L6;
       case 7: return DB.DB_L7;
       case 8: return DB.DB_L8;
       default: return DB.DB_L0;
