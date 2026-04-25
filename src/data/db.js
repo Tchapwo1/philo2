@@ -142,6 +142,56 @@ export const DB_L0 = [
     ],
     tip: "Kant disait : 'C'est une théorie qui ne vaut rien en pratique'. La pratique nécessite une sagesse (phronèsis) que la théorie seule ne donne pas.",
     difficulty: "Intermédiaire"
+  },
+  {
+    q: "La distinction 'Médiat / Immédiat' signifie :",
+    options: [
+      { text: "Ce qui est saisi sans intermédiaire (immédiat) vs ce qui nécessite un détour ou un outil (médiat).", correct: true },
+      { text: "Ce qui est rapide (immédiat) par opposition à ce qui prend du temps (médiat).", correct: false },
+      { text: "Ce qui est vrai (immédiat) par opposition à ce qui est faux (médiat).", correct: false }
+    ],
+    tip: "La sensation est immédiate ; la connaissance scientifique est médiatisée par le concept et l'instrument.",
+    difficulty: "Intermédiaire"
+  },
+  {
+    q: "Le repère 'Genre / Espèce' (Logique) permet de :",
+    options: [
+      { text: "Classer les concepts du plus général (genre) au plus particulier (espèce).", correct: true },
+      { text: "Distinguer les êtres vivants des objets inanimés.", correct: false },
+      { text: "Opposer la nature sauvage (espèce) à la civilisation (genre).", correct: false }
+    ],
+    tip: "Ex : 'Animal' est le genre, 'Homme' est l'espèce. Utile pour définir précisément un terme par 'le genre prochain et la différence spécifique'.",
+    difficulty: "Facile"
+  },
+  {
+    q: "Qu'est-ce que l'Épistémologie ?",
+    options: [
+      { text: "L'étude critique des sciences, de leurs méthodes et de leurs fondements.", correct: true },
+      { text: "L'étude de l'origine et de l'évolution des mots (étymologie).", correct: false },
+      { text: "La branche de la philosophie qui étudie les principes de la morale.", correct: false }
+    ],
+    tip: "Bachelard et Popper sont de grands épistémologues. On l'appelle aussi 'philosophie des sciences'.",
+    difficulty: "Intermédiaire"
+  },
+  {
+    q: "Le repère 'Objectif / Subjectif' désigne :",
+    options: [
+      { text: "Ce qui appartient à l'objet lui-même (objectif) vs ce qui dépend du point de vue du sujet (subjectif).", correct: true },
+      { text: "Ce qui est important (objectif) par opposition à ce qui est accessoire (subjectif).", correct: false },
+      { text: "Ce qui est prouvé (objectif) par opposition à ce qui est ressenti (subjectif).", correct: false }
+    ],
+    tip: "Une mesure de température est objective ; la sensation de froid est subjective.",
+    difficulty: "Facile"
+  },
+  {
+    q: "Qu'est-ce qu'une 'Aporie' en philosophie ?",
+    options: [
+      { text: "Une difficulté logique insoluble, une impasse de la pensée.", correct: true },
+      { text: "Un argument irréfutable qui clôt une discussion.", correct: false },
+      { text: "Une preuve mathématique appliquée à la métaphysique.", correct: false }
+    ],
+    tip: "Les dialogues de jeunesse de Platon finissent souvent en aporie : on a détruit les fausses certitudes, mais on n'a pas encore la vérité.",
+    difficulty: "Expert"
   }
 ];
 
@@ -234,7 +284,58 @@ export const DB_L1 = [
       { text: "Citer une chanson ou un film célèbre sur le bonheur pour accrocher le correcteur dès la première ligne.", correct: false },
       { text: "Rappeler que tout le monde cherche le bonheur, ce qui prouve son importance universelle.", correct: false }
     ],
-    tip: "L'accroche philosophique est toujours préférable à la citation culturelle pop. Une définition qui distingue les sens crée immédiatement la tension du sujet."
+    tip: "L'accroche philosophique est toujours préférable à la citation culturelle pop. Une définition qui distingue les sens crée immédiatement la tension du sujet.",
+    difficulty: "Intermédiaire"
+  },
+  {
+    q: "Quelle est la structure recommandée pour un paragraphe de développement ?",
+    options: [
+      { text: "Affirmation (Thèse) -> Explication (Argument) -> Illustration (Exemple) -> Bilan (Mini-conclusion).", correct: true },
+      { text: "Exemple -> Citation -> Commentaire personnel.", correct: false },
+      { text: "Résumé de la pensée d'un auteur -> Critique de cette pensée.", correct: false }
+    ],
+    tip: "C'est la méthode AEIB. Un paragraphe sans exemple est abstrait ; un paragraphe sans argument est une anecdote.",
+    difficulty: "Intermédiaire"
+  },
+  {
+    q: "En quoi consiste 'l'Analyse de l'Enjeu' d'un sujet ?",
+    options: [
+      { text: "Identifier ce qui est 'en jeu' (humainement, moralement, politiquement) derrière la question posée.", correct: true },
+      { text: "Calculer le nombre de points que rapporte chaque partie du devoir.", correct: false },
+      { text: "Chercher si le sujet est déjà tombé au baccalauréat les années précédentes.", correct: false }
+    ],
+    tip: "L'enjeu répond à la question : 'En quoi est-ce grave ou important de répondre à ce sujet ?'. Ex : l'enjeu de la vérité est la liberté.",
+    difficulty: "Expert"
+  },
+  {
+    q: "Comment éviter le hors-sujet en philosophie ?",
+    options: [
+      { text: "Toujours revenir au libellé exact du sujet et vérifier que chaque argument répond à la question posée.", correct: true },
+      { text: "Apprendre par cœur des dissertations types et les adapter le jour J.", correct: false },
+      { text: "Écrire le plus possible pour être sûr de couvrir tous les aspects du problème.", correct: false }
+    ],
+    tip: "Le sujet est votre boussole. Si vous parlez de 'la liberté' alors que le sujet est 'l'obéissance', vous êtes potentiellement hors-sujet.",
+    difficulty: "Facile"
+  },
+  {
+    q: "La 'Thèse' dans une dissertation est :",
+    options: [
+      { text: "La réponse précise et argumentée que vous apportez à la problématique dans une partie donnée.", correct: true },
+      { text: "Le titre de l'œuvre d'un philosophe célèbre.", correct: false },
+      { text: "L'opinion générale du public sur une question donnée.", correct: false }
+    ],
+    tip: "Une thèse n'est pas une simple opinion, c'est une position construite par la raison.",
+    difficulty: "Facile"
+  },
+  {
+    q: "Quelle est la fonction d'un 'Contre-exemple' ?",
+    options: [
+      { text: "Invalider une thèse trop générale en montrant un cas où elle ne s'applique pas.", correct: true },
+      { text: "Prouver que la philosophie est une discipline inutile.", correct: false },
+      { text: "Donner un exemple qui n'a aucun rapport avec le sujet pour distraire le lecteur.", correct: false }
+    ],
+    tip: "Un seul contre-exemple suffit à détruire une vérité universelle mal fondée. C'est l'outil de la critique.",
+    difficulty: "Intermédiaire"
   }
 ];
 
@@ -327,7 +428,58 @@ export const DB_L3 = [
       { text: "La liberté est possible si nous apprenons à ignorer les causes naturelles.", correct: false },
       { text: "Le libre arbitre est la preuve que l'homme est au-dessus des lois de la nature.", correct: false }
     ],
-    tip: "Spinoza est un déterministe radical. La vraie liberté n'est pas le libre arbitre, mais la compréhension nécessaire de notre propre nature."
+    tip: "Spinoza est un déterministe radical. La vraie liberté n'est pas le libre arbitre, mais la compréhension nécessaire de notre propre nature.",
+    difficulty: "Expert"
+  },
+  {
+    q: "Sur l'Art : Nietzsche s'oppose à Wagner. Pourquoi ?",
+    options: [
+      { text: "Nietzsche critique le nihilisme et la lourdeur chrétienne de Wagner, lui préférant la légèreté méditerranéenne (Bizet).", correct: true },
+      { text: "Wagner refusait d'intégrer des thèmes philosophiques dans ses opéras.", correct: false },
+      { text: "Nietzsche pensait que la musique de Wagner était trop simple techniquement.", correct: false }
+    ],
+    tip: "Le Cas Wagner : Nietzsche voit dans la musique tardive de Wagner une 'maladie' de l'âme, un renoncement à la vie au profit de la pitié.",
+    difficulty: "Expert"
+  },
+  {
+    q: "Sur le corps : Descartes vs Spinoza. Quelle est la différence majeure ?",
+    options: [
+      { text: "Descartes est dualiste (âme et corps sont deux substances) ; Spinoza est moniste (âme et corps sont deux attributs d'une seule substance).", correct: true },
+      { text: "Descartes pense que le corps n'existe pas, tandis que Spinoza pense que seule la matière existe.", correct: false },
+      { text: "Spinoza croit en la supériorité de l'âme, alors que Descartes valorise les passions du corps.", correct: false }
+    ],
+    tip: "Spinoza : 'L'esprit est l'idée du corps'. Il n'y a pas d'interaction entre deux mondes séparés, mais une seule et même réalité vue sous deux angles.",
+    difficulty: "Expert"
+  },
+  {
+    q: "Hans Jonas vs Francis Bacon sur la technique :",
+    options: [
+      { text: "Bacon veut 'se rendre maître de la nature' ; Jonas prône une 'heuristique de la peur' pour protéger les générations futures.", correct: true },
+      { text: "Jonas veut accélérer le progrès technique alors que Bacon s'en méfie.", correct: false },
+      { text: "Les deux s'accordent sur le fait que la technique est neutre et dépend uniquement de son usage.", correct: false }
+    ],
+    tip: "Le Principe Responsabilité (Jonas) : face au pouvoir destructeur de la technique, nous avons un devoir d'existence envers l'humanité future.",
+    difficulty: "Intermédiaire"
+  },
+  {
+    q: "Judith Butler vs Simone de Beauvoir :",
+    options: [
+      { text: "Butler radicalise Beauvoir : si le genre est une construction, alors il n'y a pas d'essence féminine stable derrière la performance.", correct: true },
+      { text: "Butler pense que le genre est inné, contrairement à Beauvoir.", correct: false },
+      { text: "Beauvoir refuse l'idée que la femme est 'devenue', alors que Butler la défend.", correct: false }
+    ],
+    tip: "Beauvoir : 'On ne naît pas femme, on le devient'. Butler : ce devenir est une 'performativité' répétée sans modèle original.",
+    difficulty: "Expert"
+  },
+  {
+    q: "Sur l'histoire : Hegel vs Nietzsche.",
+    options: [
+      { text: "Hegel voit un sens et un progrès dans l'histoire (Esprit) ; Nietzsche y voit une force qui peut empoisonner la vie (nécessité de l'oubli).", correct: true },
+      { text: "Nietzsche croit au progrès historique alors que Hegel est nostalgique du passé.", correct: false },
+      { text: "Les deux pensent que l'histoire est un chaos sans aucune logique.", correct: false }
+    ],
+    tip: "Considérations Inactuelles (Nietzsche) : l'excès de sens historique paralyse l'action. Hegel : l'histoire est 'le tribunal du monde'.",
+    difficulty: "Expert"
   }
 ];
 
@@ -513,5 +665,21 @@ export const DB_L8 = [
     duel: "Marx (la religion comme opium) vs Durkheim (la religion comme ciment social).",
     standing: "Distinguer la religion comme croyance (vérité) et la religion comme institution (fait social).",
     tip: "Sujet sur la Religion. Penser à la distinction entre foi et institution."
+  },
+  {
+    subject: "Peut-on être esclave de soi-même ?",
+    hook: "La question de l'addiction (aux écrans, aux substances) où le sujet agit contre sa propre volonté.",
+    paradox: "L'esclavage suppose un maître extérieur, mais la passion peut agir comme un tyran interne.",
+    duel: "Platon (le cocher et les chevaux) vs Spinoza (la servitude passionnelle).",
+    standing: "Mobiliser le repère AUTONOMIE (se donner sa loi) vs HÉTÉRONOMIE (recevoir sa loi de l'extérieur).",
+    tip: "Sujet classique sur la Liberté et la Volonté. Indispensable pour traiter de la maîtrise de soi."
+  },
+  {
+    subject: "L'inconscient est-il une excuse ?",
+    hook: "La défense juridique invoquant l'irresponsabilité pénale due à des pulsions incontrôlables.",
+    paradox: "Si l'inconscient existe, je ne suis pas maître de moi ; mais si je ne suis pas responsable, la morale disparaît.",
+    duel: "Freud (le déterminisme psychique) vs Sartre (la mauvaise foi).",
+    standing: "Distinguer la CAUSE (physique/psychique) du MOTIF (raison d'agir).",
+    tip: "Sujet sur la Conscience et la Morale. Très fréquent au baccalauréat."
   }
 ];

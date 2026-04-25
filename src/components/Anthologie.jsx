@@ -11,6 +11,33 @@ const philosophers = [
     color: "var(--rasp)"
   },
   {
+    name: "Friedrich Nietzsche",
+    era: "XIXe siècle",
+    notion: "La Volonté de Puissance",
+    summary: "Le marteau de la philosophie. Il déconstruit la morale chrétienne et annonce le Surhomme comme dépassement de l'homme actuel.",
+    concepts: ["Surhomme", "Éternel Retour", "Amor Fati"],
+    image: "/src/assets/philosophers/nietzsche.png",
+    color: "var(--azur)"
+  },
+  {
+    name: "René Descartes",
+    era: "XVIIe siècle",
+    notion: "La Méthode & Le Cogito",
+    summary: "Le fondateur de la modernité. Il cherche une certitude indubitable par le doute méthodique pour reconstruire tout le savoir.",
+    concepts: ["Doute", "Cogito", "Dualisme"],
+    image: "/src/assets/philosophers/descartes.png",
+    color: "var(--vert)"
+  },
+  {
+    name: "Platon",
+    era: "Antiquité",
+    notion: "Le Monde des Idées",
+    summary: "Père de la métaphysique occidentale. Il distingue le monde sensible des ombres et le monde intelligible des Idées éternelles.",
+    concepts: ["Mimèsis", "Dialectique", "Idées"],
+    image: "/src/assets/philosophers/plato.png",
+    color: "var(--primary)"
+  },
+  {
     name: "Immanuel Kant",
     era: "XVIIIe siècle",
     notion: "Le Devoir & La Raison",
@@ -48,24 +75,40 @@ export default function Anthologie() {
             transition={{ delay: i * 0.1 }}
             className="bento-card group"
           >
-             <div style={{ 
-               height: '160px', 
-               width: '100%', 
-               background: 'rgba(255,255,255,0.03)', 
-               marginBottom: '1.5rem', 
-               display: 'flex', 
-               alignItems: 'center', 
-               justifyContent: 'center', 
-               position: 'relative', 
-               overflow: 'hidden', 
-               borderRadius: '8px',
-               borderBottom: '1px solid rgba(255,255,255,0.1)'
-             }}>
-                <div style={{ position: 'absolute', inset: 0, opacity: 0.05, display: 'flex', alignItems: 'center', justifyContent: 'center', transform: 'scale(1.5)' }}>
-                  <Library size={80} color="white" />
-                </div>
-                <span style={{ fontFamily: 'JetBrains Mono', fontSize: '0.5rem', letterSpacing: '0.5em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', fontWeight: 900 }}>Archives · 2026</span>
-             </div>
+              <div style={{ 
+                height: '240px', 
+                width: '100%', 
+                background: 'rgba(255,255,255,0.03)', 
+                marginBottom: '1.5rem', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                position: 'relative', 
+                overflow: 'hidden', 
+                borderRadius: '16px',
+                border: '1px solid rgba(255,255,255,0.05)'
+              }}>
+                 {phil.image ? (
+                   <img 
+                    src={phil.image} 
+                    alt={phil.name} 
+                    style={{ 
+                      width: '100%', 
+                      height: '100%', 
+                      objectFit: 'cover', 
+                      opacity: 0.8,
+                      filter: 'grayscale(100%) contrast(1.2)' 
+                    }} 
+                    className="group-hover:scale-110 group-hover:filter-none transition-all duration-700"
+                   />
+                 ) : (
+                   <div style={{ position: 'absolute', inset: 0, opacity: 0.05, display: 'flex', alignItems: 'center', justifyContent: 'center', transform: 'scale(1.5)' }}>
+                     <Library size={80} color="white" />
+                   </div>
+                 )}
+                 <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, var(--bg), transparent)' }}></div>
+                 <span style={{ position: 'absolute', bottom: '1rem', left: '1rem', fontFamily: 'JetBrains Mono', fontSize: '0.5rem', letterSpacing: '0.5em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', fontWeight: 900 }}>Archives · 2026</span>
+              </div>
              
              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '1.5rem' }}>
                 <div>

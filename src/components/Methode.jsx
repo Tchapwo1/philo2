@@ -19,6 +19,18 @@ const methodSteps = [
     icon: <Layout size={20} />,
     content: "Thèse (Oui) / Antithèse (Non) / Synthèse (Dépassement).",
     tips: ["La synthèse n'est pas un compromis.", "Utilisez des repères comme 'Absolu/Relatif'."]
+  },
+  {
+    title: "4. L'Analyse de la Citation",
+    icon: <PenTool size={20} />,
+    content: "Savoir faire parler un auteur sans tomber dans le catalogue de connaissances (name-dropping).",
+    tips: ["Utilisez la méthode AEIB.", "Ne citez que ce que vous expliquez."]
+  },
+  {
+    title: "5. La Transition",
+    icon: <ChevronRight size={20} />,
+    content: "L'art du pivot logique entre les parties pour assurer une progression continue de la pensée.",
+    tips: ["Bilan de la partie I + Limite -> Annonce du II.", "Évitez le simple 'Cependant'."]
   }
 ]
 
