@@ -3,14 +3,21 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X, Gavel, BookOpen, User, Hash } from 'lucide-react';
 
 const searchData = [
-  { type: 'Philosophe', title: 'Baruch Spinoza', notion: 'La Liberté', route: 'anthologie' },
+  { type: 'Philosophe', title: 'Baruch Spinoza', notion: 'La Liberté & Dieu', route: 'anthologie' },
   { type: 'Philosophe', title: 'Friedrich Nietzsche', notion: 'La Volonté de Puissance', route: 'anthologie' },
-  { type: 'Philosophe', title: 'René Descartes', notion: 'Le Cogito', route: 'anthologie' },
-  { type: 'Philosophe', title: 'Platon', notion: 'Les Idées', route: 'anthologie' },
+  { type: 'Philosophe', title: 'René Descartes', notion: 'La Méthode & Le Cogito', route: 'anthologie' },
+  { type: 'Philosophe', title: 'Platon', notion: 'Le Monde des Idées', route: 'anthologie' },
+  { type: 'Philosophe', title: 'Immanuel Kant', notion: 'Le Devoir & La Raison', route: 'anthologie' },
+  { type: 'Philosophe', title: 'Simone de Beauvoir', notion: "L'Existence & Le Genre", route: 'anthologie' },
+  { type: 'Philosophe', title: 'Jean-Paul Sartre', notion: "L'Existentialisme", route: 'anthologie' },
+  { type: 'Philosophe', title: 'Karl Marx', notion: 'La Lutte des Classes', route: 'anthologie' },
+  { type: 'Philosophe', title: 'Jean-Jacques Rousseau', notion: 'Le Contrat Social', route: 'anthologie' },
   { type: 'Méthode', title: 'Analyse du Sujet', notion: 'Problématique', route: 'methode' },
   { type: 'Méthode', title: 'Plan Dialectique', notion: 'Thèse/Antithèse/Synthèse', route: 'methode' },
   { type: 'Méthode', title: 'Le Verrou Intellectuel', notion: 'Paradoxe', route: 'methode' },
-  { type: 'Niveau', title: 'N1 · Analyse', notion: 'Timing dissertation', route: 'home' },
+  { type: 'Niveau', title: 'N0 · Boussole', notion: 'Notions fondamentales', route: 'home' },
+  { type: 'Niveau', title: 'N1 · Analyse', notion: 'Verrous dissertation', route: 'home' },
+  { type: 'Niveau', title: 'N2 · Construction', notion: 'Architecture du Plan', route: 'home' },
   { type: 'Niveau', title: 'N3 · Duels', notion: "Confrontations d'Auteurs", route: 'home' },
 ];
 
@@ -91,7 +98,15 @@ export default function SearchOverlay({ isOpen, onClose, setActiveRoute }) {
               />
             </div>
 
-            <div style={{ display: 'grid', gap: '0.8rem' }}>
+            <div style={{ 
+              display: 'grid', 
+              gap: '0.8rem', 
+              maxHeight: '60vh', 
+              overflowY: 'auto', 
+              paddingRight: '1rem',
+              scrollbarWidth: 'thin',
+              scrollbarColor: 'var(--primary) transparent'
+            }}>
               {filteredResults.map((result, i) => (
                 <motion.div
                   key={i}
@@ -104,16 +119,18 @@ export default function SearchOverlay({ isOpen, onClose, setActiveRoute }) {
                   }}
                   style={{
                     padding: '1.2rem',
-                    background: 'rgba(255,255,255,0.03)',
-                    border: '1px solid rgba(255,255,255,0.05)',
+                    background: 'rgba(255,255,255,0.05)',
+                    border: '1px solid rgba(255,255,255,0.1)',
                     borderRadius: '16px',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '1.5rem',
-                    transition: 'all 0.2s ease'
+                    transition: 'all 0.2s ease',
+                    position: 'relative',
+                    zIndex: 2100
                   }}
-                  className="search-item"
+                  className="search-item hover:scale-[1.02]"
                 >
                   <div style={{ 
                     width: '40px', 
@@ -128,10 +145,10 @@ export default function SearchOverlay({ isOpen, onClose, setActiveRoute }) {
                     {result.type === 'Philosophe' ? <User size={20} /> : <BookOpen size={20} />}
                   </div>
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: '1.1rem', fontWeight: 600 }}>{result.title}</div>
-                    <div style={{ fontSize: '0.8rem', opacity: 0.5 }}>{result.notion}</div>
+                    <div style={{ fontSize: '1.1rem', fontWeight: 600, color: 'white' }}>{result.title}</div>
+                    <div style={{ fontSize: '0.8rem', opacity: 0.5, color: 'white' }}>{result.notion}</div>
                   </div>
-                  <div className="font-mono" style={{ fontSize: '0.6rem', padding: '4px 8px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', opacity: 0.4 }}>
+                  <div className="font-mono" style={{ fontSize: '0.6rem', padding: '4px 8px', background: 'rgba(255,255,255,0.1)', borderRadius: '4px', opacity: 0.7, color: 'var(--primary)' }}>
                     {result.type.toUpperCase()}
                   </div>
                 </motion.div>
