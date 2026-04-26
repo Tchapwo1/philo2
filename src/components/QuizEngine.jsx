@@ -127,23 +127,43 @@ export default function QuizEngine({ level, onBack }) {
 
   if (showEnd) {
     return (
-      <div style={{ 
-        maxWidth: '600px', 
-        margin: '4rem auto', 
-        textAlign: 'center',
-        padding: '4rem 2rem',
-        background: 'rgba(255,255,255,0.02)',
-        backdropFilter: 'blur(30px)',
-        borderRadius: '32px',
-        border: '1px solid rgba(255,255,255,0.1)',
-        boxShadow: '0 20px 80px rgba(0,0,0,0.5)'
-      }} className="bento-card">
-        <h2 className="font-display" style={{ fontSize: '3.5rem', color: 'white', marginBottom: '1rem' }}>Verdict Final</h2>
-        <div className="font-mono" style={{ fontSize: '5rem', margin: '2rem 0', color: 'var(--primary)', fontWeight: 900, textShadow: '0 0 40px var(--primary-glow)' }}>{session.score} PTS</div>
-        <p className="coach-analysis" style={{ marginBottom: '3rem', fontSize: '1.2rem', color: 'rgba(255,255,255,0.6)', fontStyle: 'italic', lineHeight: 1.6 }}>
-          {session.score > 400 ? "La Cour vous déclare apte à l'Excellence. Maîtrise totale." : "Instruction close. Vos conclusions manquent encore de rigueur dialectique."}
-        </p>
-        <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center' }}>
+      <div style={{ maxWidth: '800px', margin: '2rem auto' }}>
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bento-card" 
+          style={{ 
+            padding: '4rem 3rem',
+            background: 'rgba(255,255,255,0.02)',
+            backdropFilter: 'blur(30px)',
+            borderRadius: '40px',
+            border: '1px solid rgba(255,255,255,0.1)',
+            textAlign: 'center'
+          }}
+        >
+          <div className="font-mono coach-msg" style={{ marginBottom: '2rem' }}>RAPPORT_D_INSTRUCTION // FINAL_VERDICT</div>
+          <h2 className="font-display" style={{ fontSize: '4rem', color: 'white', marginBottom: '1rem' }}>Verdict Final</h2>
+          
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', margin: '3rem 0' }}>
+             <div style={{ background: 'rgba(255,255,255,0.03)', padding: '2rem', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                <p className="font-mono" style={{ fontSize: '0.7rem', opacity: 0.4, marginBottom: '1rem', fontWeight: 900 }}>SCORE_ACCUMULÉ</p>
+                <div style={{ fontSize: '3.5rem', color: 'var(--primary)', fontWeight: 900, textShadow: '0 0 30px var(--primary-glow)' }}>{session.score}</div>
+             </div>
+             <div style={{ background: 'rgba(255,255,255,0.03)', padding: '2rem', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                <p className="font-mono" style={{ fontSize: '0.7rem', opacity: 0.4, marginBottom: '1rem', fontWeight: 900 }}>NIVEAU_D_AUTORITÉ</p>
+                <div style={{ fontSize: '1.5rem', color: 'white', fontWeight: 700, marginTop: '1rem' }}>
+                   {session.score > 400 ? "AVOCAT GÉNÉRAL" : session.score > 200 ? "COMMISSAIRE" : "STAGIAIRE"}
+                </div>
+             </div>
+          </div>
+
+          <p className="coach-analysis" style={{ marginBottom: '4rem', fontSize: '1.3rem', color: 'rgba(255,255,255,0.7)', fontStyle: 'italic', lineHeight: 1.6, maxWidth: '600px', margin: '0 auto 4rem' }}>
+            {session.score > 400 
+              ? "L'instruction est concluante. Votre rigueur conceptuelle et votre capacité de synthèse font de vous un élément d'élite pour le Tribunal." 
+              : "Le dossier reste incomplet. Vos conclusions manquent encore de cette 'étincelle dialectique' nécessaire pour verrouiller une démonstration."}
+          </p>
+
+          <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center' }}>
           <button 
             onClick={() => window.location.reload()} 
             style={{ 

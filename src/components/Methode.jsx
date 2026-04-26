@@ -136,6 +136,36 @@ export default function Methode() {
           </div>
         </div>
       </section>
+      
+      {/* 🏛️ The "Verrou Intellectuel" Deep Dive */}
+      <section style={{ 
+        background: 'rgba(255,255,255,0.02)', 
+        border: '1px solid rgba(255,255,255,0.1)', 
+        padding: '4rem', 
+        borderRadius: '32px',
+        marginTop: '6rem'
+      }}>
+         <div className="font-mono coach-msg" style={{ marginBottom: '1.5rem' }}>CONCEPT_CLEF // LE_VERROU_INTELLECTUEL</div>
+         <h2 className="font-display" style={{ fontSize: '3rem', marginBottom: '2rem' }}>L'art de trouver le <em className="text-primary italic">Paradoxe</em></h2>
+         <p style={{ fontSize: '1.1rem', lineHeight: 1.8, color: 'rgba(255,255,255,0.6)', maxWidth: '800px', marginBottom: '3rem' }}>
+           Au Tribunal, nous n'acceptons pas les réponses simples. Une problématique n'est pas une question, c'est un **verrou**. Elle doit montrer pourquoi le sujet semble insoluble au premier abord.
+         </p>
+         
+         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+            <div style={{ background: 'rgba(255,255,255,0.03)', padding: '2rem', borderRadius: '24px' }}>
+               <h4 style={{ color: 'var(--primary)', marginBottom: '1rem', fontFamily: 'JetBrains Mono', fontSize: '0.8rem' }}>&rarr; ÉTAPE 01</h4>
+               <p style={{ fontWeight: 600 }}>Identifiez la "Thèse du sens commun". Ce que tout le monde pense d'abord.</p>
+            </div>
+            <div style={{ background: 'rgba(255,255,255,0.03)', padding: '2rem', borderRadius: '24px' }}>
+               <h4 style={{ color: 'var(--primary)', marginBottom: '1rem', fontFamily: 'JetBrains Mono', fontSize: '0.8rem' }}>&rarr; ÉTAPE 02</h4>
+               <p style={{ fontWeight: 600 }}>Opposez-lui une "Objection rationnelle". Pourquoi cette thèse échoue.</p>
+            </div>
+            <div style={{ background: 'rgba(255,255,255,0.03)', padding: '2rem', borderRadius: '24px' }}>
+               <h4 style={{ color: 'var(--primary)', marginBottom: '1rem', fontFamily: 'JetBrains Mono', fontSize: '0.8rem' }}>&rarr; ÉTAPE 03</h4>
+               <p style={{ fontWeight: 600 }}>Formulez le Verrou : "Comment se fait-il que X soit possible alors que Y semble l'interdire ?"</p>
+            </div>
+         </div>
+      </section>
     </div>
   )
 }

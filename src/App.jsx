@@ -5,11 +5,12 @@ import Home from './components/Home';
 import QuizEngine from './components/QuizEngine';
 import Methode from './components/Methode';
 import Anthologie from './components/Anthologie';
+import SearchOverlay from './components/SearchOverlay';
 
 function App() {
   const [activeRoute, setActiveRoute] = useState('home');
   const [level, setLevel] = useState('Terminale');
-  const [isSearching, setIsSearching] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   
   const [selectedLevel, setSelectedLevel] = useState(0);
   
@@ -41,7 +42,7 @@ function App() {
         setActiveRoute={setActiveRoute}
         level={level}
         setLevel={setLevel}
-        toggleSearch={() => setIsSearching(!isSearching)}
+        toggleSearch={() => setIsSearchOpen(true)}
       />
 
       <main style={{ minHeight: '80vh' }}>
@@ -121,6 +122,12 @@ function App() {
           LE TRIBUNAL DE LA PHILO // <span style={{ color: 'var(--primary)' }}>ÉDITION EXCELLENCE 2026</span> // BUILD_9921_LAKERS_ACTIVE
         </div>
       </footer>
+
+      <SearchOverlay 
+        isOpen={isSearchOpen} 
+        onClose={() => setIsSearchOpen(false)} 
+        setActiveRoute={setActiveRoute} 
+      />
     </div>
   );
 }
