@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { Compass, FileText, Swords, Search, Gavel, Target } from 'lucide-react'
+import { Compass, FileText, Swords, Search, Gavel, Target, Layout } from 'lucide-react'
 
 const levels = [
   { 
@@ -17,6 +17,14 @@ const levels = [
     icon: <FileText size={24} />,
     color: 'var(--rasp-pale)',
     desc: 'L\'art de déconstruire un sujet en 4h.'
+  },
+  { 
+    id: 2, 
+    badge: 'N2 · Construction', 
+    title: 'Architecture du Plan', 
+    icon: <Layout size={24} />,
+    color: 'var(--vert)',
+    desc: 'Bâtissez des structures argumentatives imparables.'
   },
   { 
     id: 3, 

@@ -339,6 +339,33 @@ export const DB_L1 = [
   }
 ];
 
+export const DB_L2 = [
+  {
+    q: "Dans un plan dialectique (Thèse-Antithèse-Synthèse), quel est le rôle de la synthèse ?",
+    options: [
+      { text: "C'est un dépassement de la contradiction vers une vérité plus haute, pas juste un résumé.", correct: true },
+      { text: "C'est un compromis entre les deux premières parties.", correct: false },
+      { text: "C'est la conclusion de la dissertation.", correct: false }
+    ],
+    tip: "Hegel appelle cela l'Aufhebung.",
+    difficulty: "Intermédiaire",
+    time: "10min",
+    mode: "Méthode"
+  },
+  {
+    q: "Quelle est la structure recommandée pour un paragraphe de dissertation ?",
+    options: [
+      { text: "Argument - Exemple - Analyse - Transition.", correct: true },
+      { text: "Idée - Citation - Conclusion.", correct: false },
+      { text: "Question - Réponse - Exemple.", correct: false }
+    ],
+    tip: "L'analyse doit toujours lier l'exemple au problème initial.",
+    difficulty: "Facile",
+    time: "5min",
+    mode: "Méthode"
+  }
+];
+
 export const DB_L3 = [
   {
     q: "Hobbes : 'l'homme est un loup pour l'homme'. Quel philosophe s'oppose le plus directement à cette vision ?",

@@ -24,6 +24,7 @@ export default function QuizEngine({ level, onBack }) {
     switch(level) {
       case 0: return DB.DB_L0;
       case 1: return DB.DB_L1;
+      case 2: return DB.DB_L2;
       case 3: return DB.DB_L3;
       case 4: return DB.DB_L4;
       case 5: return DB.DB_L5;
@@ -240,7 +241,7 @@ export default function QuizEngine({ level, onBack }) {
         >
           {phase === 'thinking' && (
             <div style={{ padding: '2rem' }}>
-              <div className="coach-msg font-mono" style={{ color: 'var(--primary)', fontWeight: 900, marginBottom: '1rem' }}>INSTRUCTION_EN_COURS // {level.toUpperCase()}</div>
+              <div className="coach-msg font-mono" style={{ color: 'var(--primary)', fontWeight: 900, marginBottom: '1rem' }}>INSTRUCTION_EN_COURS // N{String(level).toUpperCase()}</div>
               <h2 className="font-display" style={{ fontSize: '2.5rem', marginBottom: '3rem', lineHeight: 1.2 }}>{activeItem.q || activeItem.subject}</h2>
               
               <div style={{ display: 'grid', gap: '1.2rem' }}>
