@@ -7,7 +7,7 @@
 ──────────────────────────────────────────────────────────── */
 
 :root {
-    /* ATMOS / LAKERS Foundation */
+    /* ATMOS / LAKERS Foundation (Dark Mode Default) */
     --bg-page: #0A0510;
     --s1-card: rgba(255, 255, 255, 0.03);
     --s2-float: rgba(255, 255, 255, 0.05);
@@ -25,8 +25,24 @@
     /* Rhythm & Elevation */
     --unit: 6px;
     --shadow-s1: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
-    --shadow-hover: 0 8px 32px 0 var(--accent-glow);
+    --shadow-hover: 0 12px 48px 0 rgba(0, 0, 0, 0.9);
     --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* DOCUMENTARY MODE (High-Quality Paper) */
+.documentary-mode {
+    --bg-page: #f2eade;
+    --s1-card: #ffffff;
+    --s2-float: #e8dfd1;
+    --s3-active: #552583;
+    --primary: #552583;
+    --primary-glow: rgba(85, 37, 131, 0.1);
+    --accent: #FDB927;
+    --accent-glow: rgba(253, 185, 39, 0.1);
+    --encre: #1a1a1a;
+    --encre-dim: rgba(26, 26, 26, 0.7);
+    --glass-border: 1px solid rgba(0, 0, 0, 0.08);
+    --shadow-s1: 0 4px 20px rgba(0, 0, 0, 0.05);
 }
 
 * {
@@ -36,12 +52,13 @@
 }
 
 body {
-    font-family: 'Poppins', 'Libre Baskerville', serif;
+    font-family: 'Inter', 'Libre Baskerville', serif;
     background-color: var(--bg-page);
     color: var(--encre);
     min-height: 100vh;
     overflow-x: hidden;
     line-height: 1.6;
+    transition: background-color 0.5s ease, color 0.5s ease;
     
     /* ATMOS Background (Showtime Glows) */
     background-image: 
@@ -100,8 +117,22 @@ body {
 .bento-card:hover {
     transform: translateY(-4px);
     background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(253, 185, 39, 0.4);
+    border-color: var(--primary);
     box-shadow: var(--shadow-hover);
+}
+
+@media (max-width: 768px) {
+    .bento-grid {
+        grid-template-columns: 1fr !important;
+        padding: 1rem !important;
+        gap: 1rem !important;
+    }
+    .bento-card {
+        padding: 1.5rem !important;
+        grid-column: span 1 !important;
+    }
+    h1 { font-size: 2.5rem !important; }
+    h2 { font-size: 1.75rem !important; }
 }
 
 .bento-card::after {

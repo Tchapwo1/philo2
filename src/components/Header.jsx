@@ -1,7 +1,9 @@
-import React from 'react';
-import { Search, Gavel, BookOpen, Crown, Layout, GraduationCap } from 'lucide-react';
+import React, { useState } from 'react';
+import { Search, Gavel, BookOpen, Crown, Layout, GraduationCap, Eye, EyeOff, Volume2, VolumeX } from 'lucide-react';
+import AudioService from '../services/AudioService';
 
-export default function Header({ activeRoute, setActiveRoute, level, setLevel, toggleSearch }) {
+export default function Header({ activeRoute, setActiveRoute, level, setLevel, toggleSearch, isDocMode, toggleDocMode }) {
+  const [isAudioEnabled, setIsAudioEnabled] = useState(AudioService.enabled);
   const tabs = [
     { id: 'home', label: 'Accueil', icon: Layout },
     { id: 'methode', label: 'Méthode', icon: BookOpen },
@@ -9,27 +11,43 @@ export default function Header({ activeRoute, setActiveRoute, level, setLevel, t
     { id: 'quiz', label: 'Verdict', icon: Crown },
   ];
 
+  const handleAudioToggle = () => {
+    const newState = AudioService.toggle();
+    setIsAudioEnabled(newState);
+  };
+
   return (
     <header className="utility-bar" style={{ 
-      background: 'rgba(10, 5, 16, 0.8)', 
+      background: isDocMode ? 'rgba(242, 234, 222, 0.9)' : 'rgba(10, 5, 16, 0.85)', 
       backdropFilter: 'blur(20px)',
-      borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+      borderBottom: isDocMode ? '1px solid rgba(0,0,0,0.1)' : '1px solid rgba(255, 255, 255, 0.1)',
       position: 'sticky',
       top: 0,
-      zIndex: 1000
+      zIndex: 1000,
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: '0.8rem 2rem',
+      transition: 'all 0.5s ease'
     }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '2.5rem' }}>
+        <div 
+          onClick={() => setActiveRoute('home')}
+          style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', cursor: 'pointer' }}
+        >
           <div style={{ 
             background: 'var(--primary)', 
             padding: '8px', 
             borderRadius: '8px',
-            boxShadow: '0 0 20px var(--primary-glow)'
+            boxShadow: '0 0 20px var(--primary-glow)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
           }}>
-            <Gavel size={20} color="#0A0510" strokeWidth={3} />
+            <Gavel size={20} color={isDocMode ? 'white' : '#0A0510'} strokeWidth={3} />
           </div>
-          <span className="font-display" style={{ fontWeight: 900, fontSize: '1.4rem', letterSpacing: '0.1em', color: 'white' }}>
-            TRIBUNAL
+          <span className="font-display" style={{ fontWeight: 900, fontSize: '1.4rem', letterSpacing: '0.1em', color: 'var(--encre)' }}>
+            SIMONE
           </span>
         </div>
 
@@ -40,9 +58,15 @@ export default function Header({ activeRoute, setActiveRoute, level, setLevel, t
               onClick={() => setActiveRoute(tab.id)}
               className={`tab-link ${activeRoute === tab.id ? 'active' : ''}`}
               style={{
-                color: activeRoute === tab.id ? 'var(--primary)' : 'rgba(255,255,255,0.6)',
+                color: activeRoute === tab.id ? 'var(--primary)' : 'var(--encre-dim)',
                 borderBottom: activeRoute === tab.id ? '2px solid var(--primary)' : '2px solid transparent',
-                transition: 'all 0.3s ease'
+                transition: 'all 0.3s ease',
+                padding: '0.5rem 1rem',
+                cursor: 'pointer',
+                fontFamily: 'JetBrains Mono',
+                fontSize: '0.8rem',
+                fontWeight: 800,
+                textTransform: 'uppercase'
               }}
             >
               {tab.label}
@@ -51,47 +75,88 @@ export default function Header({ activeRoute, setActiveRoute, level, setLevel, t
         </nav>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+        {/* Audio Toggle */}
+        <div 
+          onClick={handleAudioToggle}
+          title={isAudioEnabled ? "Désactiver le son" : "Activer le son"}
+          style={{ 
+            cursor: 'pointer',
+            padding: '8px',
+            borderRadius: '50%',
+            background: isAudioEnabled ? 'rgba(var(--primary-rgb), 0.1)' : 'rgba(255,255,255,0.05)',
+            color: isAudioEnabled ? 'var(--primary)' : 'var(--encre-dim)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: 'all 0.3s ease'
+          }}
+        >
+          {isAudioEnabled ? <Volume2 size={18} /> : <VolumeX size={18} />}
+        </div>
+
+        {/* Doc Mode Toggle */}
+        <div 
+          onClick={toggleDocMode}
+          title={isDocMode ? "Passer en mode sombre" : "Passer en mode lecture"}
+          style={{ 
+            cursor: 'pointer',
+            padding: '8px',
+            borderRadius: '50%',
+            background: 'rgba(var(--primary-rgb), 0.1)',
+            color: 'var(--primary)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: 'all 0.3s ease'
+          }}
+        >
+          {isDocMode ? <EyeOff size={18} /> : <Eye size={18} />}
+        </div>
+
         {/* Level Switcher */}
         <div 
-          onClick={() => setLevel(level === 'Terminale' ? '1ère' : 'Terminale')}
+          onClick={() => setLevel(level === 'Terminale' ? 'Prépas' : level === 'Prépas' ? 'Agrég' : 'Terminale')}
           style={{ 
             display: 'flex', 
             alignItems: 'center', 
             gap: '0.5rem', 
             cursor: 'pointer',
-            background: 'var(--primary)',
-            color: '#0A0510',
+            background: isDocMode ? 'rgba(0,0,0,0.05)' : 'rgba(255,255,255,0.05)',
+            border: isDocMode ? '1px solid rgba(0,0,0,0.1)' : '1px solid rgba(255,255,255,0.1)',
+            color: 'var(--encre)',
             padding: '6px 16px',
             borderRadius: '40px',
             fontFamily: 'JetBrains Mono',
             fontSize: '0.7rem',
             fontWeight: 900,
-            boxShadow: '0 4px 15px var(--primary-glow)'
+            transition: 'all 0.2s ease'
           }}
         >
-          <GraduationCap size={14} />
+          <GraduationCap size={14} style={{ color: 'var(--primary)' }} />
           {level.toUpperCase()}
         </div>
 
         {/* Search Trigger */}
-        <div 
+        <button 
           onClick={toggleSearch}
           style={{ 
             cursor: 'pointer', 
-            width: '40px', 
-            height: '40px', 
+            width: '42px', 
+            height: '42px', 
             display: 'flex', 
             alignItems: 'center', 
             justifyContent: 'center',
-            borderRadius: '50%',
-            background: 'rgba(255,255,255,0.05)',
-            border: '1px solid rgba(255,255,255,0.1)',
-            color: 'white'
+            borderRadius: '12px',
+            background: 'var(--primary)',
+            border: 'none',
+            color: isDocMode ? 'white' : '#0A0510',
+            boxShadow: '0 4px 15px var(--primary-glow)',
+            transition: 'all 0.3s cubic-bezier(0.19, 1, 0.22, 1)',
           }}
         >
-          <Search size={18} />
-        </div>
+          <Search size={20} strokeWidth={3} />
+        </button>
       </div>
     </header>
   );

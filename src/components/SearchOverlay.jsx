@@ -45,14 +45,15 @@ export default function SearchOverlay({ isOpen, onClose, setActiveRoute }) {
     <AnimatePresence>
       {isOpen && (
         <motion.div
+          key="search-overlay-main"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           style={{
             position: 'fixed',
             inset: 0,
-            background: 'rgba(10, 5, 16, 0.95)',
-            backdropFilter: 'blur(10px)',
+            background: 'rgba(10, 5, 16, 0.98)',
+            backdropFilter: 'blur(15px)',
             zIndex: 2000,
             display: 'flex',
             flexDirection: 'column',
@@ -62,108 +63,142 @@ export default function SearchOverlay({ isOpen, onClose, setActiveRoute }) {
           onClick={onClose}
         >
           <motion.div
-            initial={{ scale: 0.9, y: 20 }}
-            animate={{ scale: 1, y: 0 }}
-            style={{ width: '100%', maxWidth: '700px' }}
+            initial={{ scale: 0.95, y: 30, opacity: 0 }}
+            animate={{ scale: 1, y: 0, opacity: 1 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            style={{ width: '100%', maxWidth: '750px' }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div style={{ position: 'relative', marginBottom: '2rem' }}>
+            <div style={{ position: 'relative', marginBottom: '3rem' }}>
               <Search 
-                style={{ position: 'absolute', left: '1.5rem', top: '50%', transform: 'translateY(-50%)', opacity: 0.5 }} 
+                style={{ position: 'absolute', left: '1.5rem', top: '50%', transform: 'translateY(-50%)', opacity: 0.5, color: 'var(--primary)' }} 
                 size={24} 
               />
               <input
                 ref={inputRef}
                 type="text"
-                placeholder="Chercher un philosophe, une méthode, un verrou..."
+                placeholder="RECHERCHER DANS LES ARCHIVES..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 style={{
                   width: '100%',
-                  background: 'rgba(255,255,255,0.05)',
+                  background: 'rgba(255,255,255,0.03)',
                   border: '1px solid rgba(255,255,255,0.1)',
-                  borderRadius: '20px',
-                  padding: '1.5rem 1.5rem 1.5rem 4rem',
-                  fontSize: '1.5rem',
+                  borderRadius: '16px',
+                  padding: '1.5rem 1.5rem 1.5rem 4.5rem',
+                  fontSize: '1.4rem',
                   color: 'white',
-                  fontFamily: 'Outfit, sans-serif',
+                  fontFamily: 'JetBrains Mono',
+                  fontWeight: 400,
                   outline: 'none',
-                  boxShadow: '0 0 40px rgba(0,0,0,0.5)'
+                  boxShadow: '0 20px 60px rgba(0,0,0,0.6)',
+                  letterSpacing: '-0.02em'
                 }}
               />
-              <X 
+              <motion.div
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
                 onClick={onClose}
-                style={{ position: 'absolute', right: '1.5rem', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer', opacity: 0.5 }} 
-                size={24} 
-              />
+                style={{ 
+                  position: 'absolute', 
+                  right: '1.5rem', 
+                  top: '50%', 
+                  transform: 'translateY(-50%)', 
+                  cursor: 'pointer', 
+                  opacity: 0.5,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  background: 'rgba(255,255,255,0.1)',
+                  padding: '8px',
+                  borderRadius: '10px'
+                }}
+              >
+                <X size={20} />
+              </motion.div>
             </div>
 
             <div style={{ 
               display: 'grid', 
-              gap: '0.8rem', 
-              maxHeight: '60vh', 
+              gap: '1rem', 
+              maxHeight: '65vh', 
               overflowY: 'auto', 
               paddingRight: '1rem',
-              scrollbarWidth: 'thin',
-              scrollbarColor: 'var(--primary) transparent'
+              scrollbarWidth: 'none'
             }}>
               {filteredResults.map((result, i) => (
                 <motion.div
                   key={i}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.05 }}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  whileHover={{ 
+                    x: 10, 
+                    backgroundColor: 'rgba(253, 185, 39, 0.08)',
+                    borderColor: 'rgba(253, 185, 39, 0.3)'
+                  }}
+                  transition={{ 
+                    delay: i * 0.03,
+                    type: 'spring',
+                    damping: 20
+                  }}
                   onClick={() => {
                     setActiveRoute(result.route);
                     onClose();
                   }}
                   style={{
-                    padding: '1.2rem',
-                    background: 'rgba(255,255,255,0.05)',
-                    border: '1px solid rgba(255,255,255,0.1)',
+                    padding: '1.5rem',
+                    background: 'rgba(255,255,255,0.02)',
+                    border: '1px solid rgba(255,255,255,0.05)',
                     borderRadius: '16px',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '1.5rem',
-                    transition: 'all 0.2s ease',
-                    position: 'relative',
-                    zIndex: 2100
+                    gap: '2rem',
+                    transition: 'border-color 0.2s ease, background-color 0.2s ease'
                   }}
-                  className="search-item hover:scale-[1.02]"
                 >
                   <div style={{ 
-                    width: '40px', 
-                    height: '40px', 
+                    width: '48px', 
+                    height: '48px', 
                     background: result.type === 'Philosophe' ? 'rgba(253, 185, 39, 0.1)' : 'rgba(255,255,255,0.05)', 
                     color: result.type === 'Philosophe' ? 'var(--primary)' : 'white',
                     display: 'flex', 
                     alignItems: 'center', 
                     justifyContent: 'center',
-                    borderRadius: '10px'
+                    borderRadius: '12px',
+                    boxShadow: result.type === 'Philosophe' ? '0 0 20px rgba(253, 185, 39, 0.1)' : 'none'
                   }}>
-                    {result.type === 'Philosophe' ? <User size={20} /> : <BookOpen size={20} />}
+                    {result.type === 'Philosophe' ? <User size={22} /> : <BookOpen size={22} />}
                   </div>
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: '1.1rem', fontWeight: 600, color: 'white' }}>{result.title}</div>
-                    <div style={{ fontSize: '0.8rem', opacity: 0.5, color: 'white' }}>{result.notion}</div>
+                    <div style={{ fontSize: '1.2rem', fontWeight: 700, color: 'white', fontFamily: 'Libre Baskerville' }}>{result.title}</div>
+                    <div style={{ fontSize: '0.85rem', opacity: 0.5, color: 'white', marginTop: '4px', fontStyle: 'italic' }}>{result.notion}</div>
                   </div>
-                  <div className="font-mono" style={{ fontSize: '0.6rem', padding: '4px 8px', background: 'rgba(255,255,255,0.1)', borderRadius: '4px', opacity: 0.7, color: 'var(--primary)' }}>
+                  <div className="font-mono" style={{ 
+                    fontSize: '0.65rem', 
+                    padding: '6px 12px', 
+                    background: 'rgba(255,255,255,0.05)', 
+                    borderRadius: '6px', 
+                    opacity: 0.8, 
+                    color: 'var(--primary)',
+                    fontWeight: 900,
+                    border: '1px solid rgba(253, 185, 39, 0.2)'
+                  }}>
                     {result.type.toUpperCase()}
                   </div>
                 </motion.div>
               ))}
 
               {query.length > 1 && filteredResults.length === 0 && (
-                <div style={{ textAlign: 'center', padding: '4rem', opacity: 0.3 }}>
-                  <Hash size={40} style={{ margin: '0 auto 1rem' }} />
-                  <p>Aucun dossier trouvé pour "{query}"</p>
+                <div style={{ textAlign: 'center', padding: '6rem 2rem', opacity: 0.3 }}>
+                  <Hash size={48} style={{ margin: '0 auto 1.5rem', color: 'var(--primary)' }} />
+                  <p style={{ fontFamily: 'JetBrains Mono', fontSize: '1rem' }}>AUCUN_DOSSIER_TROUVÉ_POUR : "{query.toUpperCase()}"</p>
                 </div>
               )}
 
               {query.length <= 1 && (
-                <div style={{ opacity: 0.3, fontSize: '0.8rem', textAlign: 'center', marginTop: '2rem' }}>
-                  Tapez au moins 2 caractères pour réveiller les archives...
+                <div style={{ opacity: 0.25, fontSize: '0.75rem', textAlign: 'center', marginTop: '3rem', fontFamily: 'JetBrains Mono', letterSpacing: '0.1em' }}>
+                  VEUILLEZ_ENTRER_AU_MOINS_DEUX_CARACTÈRES...
                 </div>
               )}
             </div>

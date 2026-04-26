@@ -6,32 +6,91 @@ import QuizEngine from './components/QuizEngine';
 import Methode from './components/Methode';
 import Anthologie from './components/Anthologie';
 import SearchOverlay from './components/SearchOverlay';
+import DraftingSuite from './components/DraftingSuite';
 
 function App() {
   const [activeRoute, setActiveRoute] = useState('home');
   const [level, setLevel] = useState('Terminale');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  
   const [selectedLevel, setSelectedLevel] = useState(0);
+  const [isDocMode, setIsDocMode] = useState(false);
   
-  // Mock User Session for Priority Engine
-  const [session, setSession] = useState({
-    isNewUser: false,
-    lastVisited: '2026-04-20T10:00:00Z', // Revisit within 48h
-    examDate: '2026-06-15',
-    progress: 35
+  // Persistent Justice Stats
+  const [justiceStats, setJusticeStats] = useState(() => {
+    const saved = localStorage.getItem('simone_justice_stats');
+    return saved ? JSON.parse(saved) : {
+      totalScore: 0,
+      casesClosed: 0,
+      lastRank: 'STAGIAIRE',
+      unlockedLevels: [0]
+    };
   });
 
-  // Adaptive logic (Coach Mode constants)
+  useEffect(() => {
+    localStorage.setItem('simone_justice_stats', JSON.stringify(justiceStats));
+  }, [justiceStats]);
+
+  useEffect(() => {
+    if (isDocMode) {
+      document.body.classList.add('documentary-mode');
+    } else {
+      document.body.classList.remove('documentary-mode');
+    }
+  }, [isDocMode]);
+
+  const [session] = useState({
+    examDate: '2026-06-15',
+  });
+
   const daysToExam = Math.ceil((new Date(session.examDate) - new Date()) / (1000 * 60 * 60 * 24));
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 's')) {
+        e.preventDefault();
+        setIsSearchOpen(true);
+      }
+      if (e.key === 'Escape') {
+        setIsSearchOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  const updateJustice = (gainedScore) => {
+    setJusticeStats(prev => ({
+      ...prev,
+      totalScore: prev.totalScore + gainedScore,
+      casesClosed: prev.casesClosed + 1
+    }));
+  };
 
   const renderView = () => {
     switch (activeRoute) {
-      case 'home': return <Home level={level} session={session} daysToExam={daysToExam} setActiveRoute={setActiveRoute} onSelectLevel={(lvl) => { setSelectedLevel(lvl); setActiveRoute('quiz'); }} />;
-      case 'quiz': return <QuizEngine level={selectedLevel} />;
+      case 'home': return (
+        <Home 
+          stats={justiceStats} 
+          daysToExam={daysToExam} 
+          setActiveRoute={setActiveRoute} 
+          onSelectLevel={(lvl) => { setSelectedLevel(lvl); setActiveRoute('quiz'); }} 
+        />
+      );
+      case 'quiz': 
+        if (selectedLevel === 9) {
+          return <DraftingSuite onBack={() => setActiveRoute('home')} onComplete={updateJustice} />;
+        }
+        return <QuizEngine level={selectedLevel} onBack={() => setActiveRoute('home')} onComplete={updateJustice} />;
       case 'anthologie': return <Anthologie />;
       case 'methode': return <Methode />;
-      default: return <Home onSelectLevel={(lvl) => { setSelectedLevel(lvl); setActiveRoute('quiz'); }} />;
+      default: return (
+        <Home 
+          stats={justiceStats} 
+          daysToExam={daysToExam} 
+          setActiveRoute={setActiveRoute} 
+          onSelectLevel={(lvl) => { setSelectedLevel(lvl); setActiveRoute('quiz'); }} 
+        />
+      );
     }
   };
 
@@ -42,6 +101,8 @@ function App() {
         setActiveRoute={setActiveRoute}
         level={level}
         setLevel={setLevel}
+        isDocMode={isDocMode}
+        toggleDocMode={() => setIsDocMode(!isDocMode)}
         toggleSearch={() => setIsSearchOpen(true)}
       />
 
@@ -59,64 +120,8 @@ function App() {
         </AnimatePresence>
       </main>
 
-      {/* Mock Search Overlay (S2 Surface) */}
-      <AnimatePresence>
-        {isSearching && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            style={{
-              position: 'fixed',
-              inset: 0,
-              background: 'rgba(5, 2, 8, 0.9)',
-              zIndex: 2000,
-              display: 'flex',
-              justifyContent: 'center',
-              paddingTop: '15vh',
-              backdropFilter: 'blur(10px)'
-            }}
-            onClick={() => setIsSearching(false)}
-          >
-            <motion.div 
-              initial={{ scale: 0.9, y: 30 }}
-              animate={{ scale: 1, y: 0 }}
-              className="bento-card"
-              style={{ 
-                width: '90%', 
-                maxWidth: '600px', 
-                height: 'fit-content', 
-                background: 'rgba(255,255,255,0.05)',
-                border: '1px solid rgba(255,255,255,0.1)',
-                boxShadow: '0 0 50px rgba(0,0,0,0.5)'
-              }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="font-mono text-primary coach-msg" style={{ marginBottom: '1rem', color: 'var(--primary)', fontWeight: 900 }}>TRIBUNAL_SEARCH_v3.0</div>
-              <input 
-                autoFocus
-                placeholder="Chercher une notion (ex: La Justice)..."
-                style={{
-                  width: '100%',
-                  padding: '1.2rem',
-                  fontSize: '1.4rem',
-                  background: 'transparent',
-                  border: 'none',
-                  borderBottom: '2px solid var(--primary)',
-                  color: 'white',
-                  fontFamily: 'Libre Baskerville',
-                  outline: 'none'
-                }}
-              />
-              <div style={{ marginTop: '1.5rem', opacity: 0.5, fontSize: '0.7rem', color: 'white' }} className="font-mono uppercase tracking-widest">
-                Appuyez sur ESC pour fermer
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
-      <footer className="font-mono" style={{ padding: '6rem 2rem 4rem', textAlign: 'center', opacity: 0.4, fontSize: '0.7rem', color: 'white' }}>
+      <footer className="font-mono" style={{ padding: '6rem 2rem 4rem', textAlign: 'center', opacity: 0.4, fontSize: '0.7rem', color: 'var(--encre)' }}>
         <div style={{ marginBottom: '1rem', fontSize: '1.5rem' }}>⚖️</div>
         <div style={{ letterSpacing: '0.2em' }}>
           LE TRIBUNAL DE LA PHILO // <span style={{ color: 'var(--primary)' }}>ÉDITION EXCELLENCE 2026</span> // BUILD_9921_LAKERS_ACTIVE

@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Gavel, RotateCcw, ChevronRight, Info, AlertCircle, CheckCircle2, Clock, Zap, Target } from 'lucide-react';
+import { Gavel, RotateCcw, ChevronRight, Info, AlertCircle, CheckCircle2, Clock, Zap, Target, Volume2, VolumeX } from 'lucide-react';
+import AudioService from '../services/AudioService';
 import * as DB from '../data/db';
 
-export default function QuizEngine({ level, onBack }) {
+export default function QuizEngine({ level, onBack, onComplete }) {
   // --- Engine State ---
   const [session, setSession] = useState({
     idx: 0,
@@ -18,6 +19,9 @@ export default function QuizEngine({ level, onBack }) {
   const [selectedOpt, setSelectedOpt] = useState(null);
   const [timeLeft, setTimeLeft] = useState(30);
   const [showEnd, setShowEnd] = useState(false);
+  
+  // Interaction State for L8
+  const [tension, setTension] = useState(0); // -10 to 10 scale
 
   // --- Adaptive Logic: Selective Pool ---
   const fullDb = useMemo(() => {
@@ -35,13 +39,9 @@ export default function QuizEngine({ level, onBack }) {
     }
   }, [level]);
 
-  // Sprint 1: Filtered pool based on mastery
   const activeItem = useMemo(() => {
-    // If mastery is high, we look for Expert items, if low, Facile.
     const difficultyTarget = session.mastery > 75 ? 'Expert' : session.mastery < 40 ? 'Facile' : 'Intermédiaire';
     const matches = fullDb.filter(item => item.difficulty === difficultyTarget || !item.difficulty);
-    
-    // Fallback to sequential pick from fullDb if matches are thin (ensuring progress)
     return matches[session.idx % matches.length] || fullDb[session.idx % fullDb.length];
   }, [session.idx, session.mastery, fullDb]);
 
@@ -49,15 +49,6 @@ export default function QuizEngine({ level, onBack }) {
     if (!activeItem?.options) return [];
     return [...activeItem.options].sort(() => Math.random() - 0.5);
   }, [activeItem]);
-
-  // --- Timer Logic ---
-  useEffect(() => {
-    if (phase !== 'thinking' || showEnd) return;
-    if (timeLeft <= 0) { handleVerdict(null, true); return; }
-
-    const timer = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
-    return () => clearInterval(timer);
-  }, [timeLeft, phase, showEnd]);
 
   // --- Action Handlers ---
   const handleVerdict = (opt, isTimeout = false) => {
@@ -67,7 +58,10 @@ export default function QuizEngine({ level, onBack }) {
     const isCorrect = opt?.correct && !isTimeout;
     const elapsed = Date.now() - session.startTime;
 
-    // Wait for "Thinking Pulse" animation (Sentient feel)
+    if (isCorrect) {
+      AudioService.play('gavel', 0.8);
+    }
+
     setTimeout(() => {
       setPhase('verdict');
       
@@ -75,10 +69,7 @@ export default function QuizEngine({ level, onBack }) {
         const newStreak = isCorrect ? prev.streak + 1 : 0;
         const streakMultiplier = newStreak > 3 ? 1.5 : newStreak > 1 ? 1.2 : 1;
         const timeBonus = Math.max(0, (30 - (elapsed / 1000)) * 2);
-        
         const gainedPoints = isCorrect ? Math.round((100 + timeBonus) * streakMultiplier) : 0;
-        
-        // Adaptive update: mastery adjusts based on hit/miss
         const masteryShift = isCorrect ? 5 : -8;
 
         return {
@@ -89,109 +80,189 @@ export default function QuizEngine({ level, onBack }) {
           errors: isCorrect ? prev.errors : [...prev.errors, { item: activeItem, time: new Date() }]
         };
       });
-    }, 1200); // 1.2s judging delay
+    }, 1200);
   };
 
   const nextCase = () => {
     if (session.idx + 1 >= fullDb.length) {
+      if (onComplete) onComplete(session.score);
       setShowEnd(true);
     } else {
       setSession(prev => ({ ...prev, idx: prev.idx + 1, startTime: Date.now() }));
       setPhase('thinking');
       setSelectedOpt(null);
       setTimeLeft(30);
+      setTension(0);
+      AudioService.play('paper', 0.4);
     }
   };
 
-  // --- Technical Coach Feedback Logic ---
-  const getCoachFeedback = () => {
+  const coach = useMemo(() => {
     if (phase !== 'verdict') return null;
     const isCorrect = selectedOpt?.correct;
     
-    if (isCorrect) {
-      return {
-        violation: "RAISONNEMENT_RECEVABLE",
-        analysis: "Votre verdict est linguistiquement et logiquement valide. L'argumentation respecte les paradigmes du programme.",
-        tip: "Maintenez ce rythme pour débloquer les dossiers 'Expert'."
-      };
-    }
-
-    return {
+    return isCorrect ? {
+      violation: "RAISONNEMENT_RECEVABLE",
+      analysis: "Votre verdict est linguistiquement et logiquement valide. L'argumentation respecte les paradigmes du programme.",
+      tip: "Maintenez ce rythme pour débloquer les dossiers 'Expert'."
+    } : {
       violation: "RUPTURE_DE_LOGIQUE",
       analysis: activeItem.tip || "L'argumentation présentée est irrecevable. Elle repose sur une confusion sémantique ou une erreur de méthode classique.",
-      tip: `Concentrez-vous sur le repère : ${activeItem.difficulty || 'FONDAMENTAL'}.`
+      tip: `Concentrez-vous sur le repère : ${activeItem.difficulty || 'FONDAMENTAL'}.`,
+      related: activeItem.related // Cross-reference target
     };
-  };
+  }, [phase, selectedOpt, activeItem]);
 
-  const coach = getCoachFeedback();
-
-  if (showEnd) {
+  // --- Render Case File (Level 8) ---
+  if (level === 8) {
     return (
-      <div style={{ maxWidth: '800px', margin: '2rem auto' }}>
+      <div style={{ maxWidth: '1000px', margin: '0 auto', width: '100%' }}>
+        <header style={{ marginBottom: '3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div>
+            <div className="font-mono coach-msg" style={{ marginBottom: '0.5rem' }}>SIMULATION_TOTALE // DOSSIER_N{session.idx + 1}</div>
+            <h2 className="font-display" style={{ fontSize: '2.5rem', color: 'var(--encre)' }}>L'Instruction du <em style={{ color: 'var(--primary)' }}>Procès</em></h2>
+          </div>
+          <button onClick={onBack} style={{ background: 'none', border: 'none', color: 'var(--encre-dim)', cursor: 'pointer', fontFamily: 'JetBrains Mono', fontSize: '0.7rem', fontWeight: 900 }}>[ FERMER_LE_DOSSIER ]</button>
+        </header>
+
         <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
+          key={session.idx}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
           className="bento-card" 
-          style={{ 
-            padding: '4rem 3rem',
-            background: 'rgba(255,255,255,0.02)',
-            backdropFilter: 'blur(30px)',
-            borderRadius: '40px',
-            border: '1px solid rgba(255,255,255,0.1)',
-            textAlign: 'center'
-          }}
+          style={{ padding: '3rem', borderLeft: '4px solid var(--primary)', background: 'var(--s1-card)' }}
         >
-          <div className="font-mono coach-msg" style={{ marginBottom: '2rem' }}>RAPPORT_D_INSTRUCTION // FINAL_VERDICT</div>
-          <h2 className="font-display" style={{ fontSize: '4rem', color: 'white', marginBottom: '1rem' }}>Verdict Final</h2>
-          
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', margin: '3rem 0' }}>
-             <div style={{ background: 'rgba(255,255,255,0.03)', padding: '2rem', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                <p className="font-mono" style={{ fontSize: '0.7rem', opacity: 0.4, marginBottom: '1rem', fontWeight: 900 }}>SCORE_ACCUMULÉ</p>
-                <div style={{ fontSize: '3.5rem', color: 'var(--primary)', fontWeight: 900, textShadow: '0 0 30px var(--primary-glow)' }}>{session.score}</div>
-             </div>
-             <div style={{ background: 'rgba(255,255,255,0.03)', padding: '2rem', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                <p className="font-mono" style={{ fontSize: '0.7rem', opacity: 0.4, marginBottom: '1rem', fontWeight: 900 }}>NIVEAU_D_AUTORITÉ</p>
-                <div style={{ fontSize: '1.5rem', color: 'white', fontWeight: 700, marginTop: '1rem' }}>
-                   {session.score > 400 ? "AVOCAT GÉNÉRAL" : session.score > 200 ? "COMMISSAIRE" : "STAGIAIRE"}
-                </div>
-             </div>
+          <div style={{ marginBottom: '3rem' }}>
+            <h3 style={{ fontFamily: 'Libre Baskerville', fontSize: '1.75rem', color: 'var(--encre)', marginBottom: '1.5rem', lineHeight: 1.4 }}>{activeItem.subject}</h3>
+            <div style={{ display: 'flex', gap: '1rem' }}>
+              <span className="tag tag-vibrant">BAC_PHILO_2026</span>
+              <span className="tag">NIVEAU_EXPERT</span>
+            </div>
           </div>
 
-          <p className="coach-analysis" style={{ marginBottom: '4rem', fontSize: '1.3rem', color: 'rgba(255,255,255,0.7)', fontStyle: 'italic', lineHeight: 1.6, maxWidth: '600px', margin: '0 auto 4rem' }}>
-            {session.score > 400 
-              ? "L'instruction est concluante. Votre rigueur conceptuelle et votre capacité de synthèse font de vous un élément d'élite pour le Tribunal." 
-              : "Le dossier reste incomplet. Vos conclusions manquent encore de cette 'étincelle dialectique' nécessaire pour verrouiller une démonstration."}
-          </p>
+          <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '3rem' }}>
+            <div className="space-y-12">
+              <section>
+                <h4 style={{ color: 'var(--primary)', fontSize: '0.75rem', fontFamily: 'JetBrains Mono', textTransform: 'uppercase', letterSpacing: '0.2em', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                   <Zap size={16} /> L'Amorce (Hook)
+                </h4>
+                <p style={{ color: 'var(--encre)', fontStyle: 'italic', fontSize: '1.1rem', lineHeight: 1.7, background: 'rgba(var(--primary-rgb), 0.05)', padding: '1.5rem', borderRadius: '12px' }}>{activeItem.hook}</p>
+              </section>
 
+              <section>
+                <h4 style={{ color: 'var(--primary)', fontSize: '0.75rem', fontFamily: 'JetBrains Mono', textTransform: 'uppercase', letterSpacing: '0.2em', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                   <AlertCircle size={16} /> Le Paradoxe (Verrou)
+                </h4>
+                <p style={{ color: 'var(--encre)', fontSize: '1.05rem', lineHeight: 1.7 }}>{activeItem.paradox}</p>
+              </section>
+
+              {/* TENSION SCALE (Suggestion 4) */}
+              <section style={{ padding: '2.5rem', background: 'var(--s2-float)', borderRadius: '24px', textAlign: 'center' }}>
+                <h4 style={{ color: 'var(--primary)', fontSize: '0.7rem', fontFamily: 'JetBrains Mono', textTransform: 'uppercase', marginBottom: '2rem' }}>Balance des Arguments (Tension Scale)</h4>
+                <div style={{ position: 'relative', height: '4px', background: 'var(--encre-dim)', opacity: 0.2, margin: '2rem 0' }}>
+                   <motion.div 
+                     animate={{ x: `${tension * 5}%` }}
+                     style={{ width: '40px', height: '40px', background: 'var(--primary)', borderRadius: '50%', position: 'absolute', top: '-18px', left: 'calc(50% - 20px)', boxShadow: '0 0 20px var(--primary-glow)', display: 'flex', alignItems: 'center', justifySelf: 'center' }}>
+                      <Target size={20} color="black" style={{ margin: 'auto' }} />
+                   </motion.div>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1.5rem' }}>
+                   <button onClick={() => setTension(prev => Math.max(-10, prev - 2))} style={{ background: 'none', border: '1px solid var(--encre-dim)', padding: '0.5rem 1rem', borderRadius: '8px', color: 'var(--encre)', fontSize: '0.7rem', cursor: 'pointer' }}>THÈSE A</button>
+                   <button onClick={() => setTension(prev => Math.min(10, prev + 2))} style={{ background: 'none', border: '1px solid var(--encre-dim)', padding: '0.5rem 1rem', borderRadius: '8px', color: 'var(--encre)', fontSize: '0.7rem', cursor: 'pointer' }}>THÈSE B</button>
+                </div>
+                <p style={{ marginTop: '1.5rem', fontSize: '0.85rem', color: 'var(--encre-dim)', fontStyle: 'italic' }}>{activeItem.duel}</p>
+              </section>
+            </div>
+
+            <aside>
+              <section className="bento-card" style={{ padding: '2rem', background: 'rgba(255,255,255,0.05)', height: '100%' }}>
+                <h4 style={{ color: 'var(--primary)', fontSize: '0.75rem', fontFamily: 'JetBrains Mono', textTransform: 'uppercase', letterSpacing: '0.2em', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                   <Info size={16} /> Prise de Position
+                </h4>
+                <p style={{ color: 'var(--encre)', fontSize: '1rem', lineHeight: 1.7 }}>{activeItem.standing}</p>
+                
+                {/* CROSS-REFERENCE ENGINE (Suggestion 3) */}
+                {activeItem.related && (
+                  <div style={{ marginTop: '3rem', borderTop: '1px solid var(--glass-border)', paddingTop: '2rem' }}>
+                    <p style={{ fontSize: '0.7rem', fontFamily: 'JetBrains Mono', color: 'var(--primary)', marginBottom: '1rem' }}>RECHERCHES_ASSOCIÉES</p>
+                    <motion.button 
+                      whileHover={{ x: 5 }}
+                      onClick={() => setSession(prev => ({ ...prev, idx: (activeItem.related - 1) % fullDb.length }))}
+                      className="tag tag-vibrant" 
+                      style={{ cursor: 'pointer', width: '100%', padding: '1rem', textAlign: 'left', border: 'none', borderRadius: '8px' }}
+                    >
+                       Consulter le dossier #{activeItem.related}
+                    </motion.button>
+                  </div>
+                )}
+              </section>
+            </aside>
+          </div>
+
+          <footer style={{ marginTop: '4rem', paddingTop: '2rem', borderTop: '1px solid var(--glass-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'relative', zIndex: 20 }}>
+             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', opacity: 0.6, color: 'var(--encre)' }}>
+                <Clock size={16} />
+                <span style={{ fontSize: '0.7rem', fontFamily: 'JetBrains Mono' }}>TEMPS_DE_LECTURE_ESTIME : 4min</span>
+             </div>
+             <motion.button 
+               whileHover={{ scale: 1.02 }}
+               whileTap={{ scale: 0.98 }}
+               onClick={(e) => { 
+                 e.stopPropagation(); 
+                 // Give some points for reading if it's the last one
+                 if (session.idx + 1 >= fullDb.length) {
+                   setSession(prev => ({ ...prev, score: prev.score + 50 }));
+                 }
+                 nextCase(); 
+               }}
+               style={{ 
+                 background: 'var(--primary)', 
+                 color: 'var(--bg-page)', 
+                 border: 'none', 
+                 padding: '1rem 3rem', 
+                 borderRadius: '12px', 
+                 fontFamily: 'JetBrains Mono', 
+                 fontWeight: 900, 
+                 cursor: 'pointer',
+                 display: 'flex',
+                 alignItems: 'center',
+                 gap: '1rem',
+                 boxShadow: '0 8px 25px var(--primary-glow)',
+                 pointerEvents: 'auto'
+               }}
+             >
+               {session.idx + 1 >= fullDb.length ? 'TERMINER LA SESSION' : 'DOSSIER SUIVANT'} <ChevronRight size={18} />
+             </motion.button>
+          </footer>
+        </motion.div>
+      </div>
+    );
+  }
+
+  // Rest of QuizEngine logic remains mostly same but using var(--encre) etc.
+  const engineClassName = `bento-card ${phase === 'verdict' ? (selectedOpt?.correct ? 'gavel-strike' : 'case-dismissed') : ''}`;
+
+  if (showEnd) {
+    const finalRank = session.score > 400 ? "AVOCAT GÉNÉRAL" : session.score > 200 ? "COMMISSAIRE" : "STAGIAIRE";
+    return (
+      <div style={{ maxWidth: '800px', margin: '2rem auto' }}>
+        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="bento-card" style={{ padding: '4rem 3rem', textAlign: 'center' }}>
+          <h2 className="font-display" style={{ fontSize: '4rem', color: 'var(--encre)', marginBottom: '1rem' }}>Verdict Final</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', margin: '3rem 0' }}>
+             <div className="bento-card" style={{ padding: '2rem' }}>
+                <p className="font-mono" style={{ fontSize: '0.7rem', opacity: 0.4, marginBottom: '1rem', fontWeight: 900 }}>SCORE_ACCUMULÉ</p>
+                <div style={{ fontSize: '3.5rem', color: 'var(--primary)', fontWeight: 900 }}>{session.score}</div>
+             </div>
+             <div className="bento-card" style={{ padding: '2rem' }}>
+                <p className="font-mono" style={{ fontSize: '0.7rem', opacity: 0.4, marginBottom: '1rem', fontWeight: 900 }}>NIVEAU_D_AUTORITÉ</p>
+                <div style={{ fontSize: '1.5rem', color: 'var(--encre)', fontWeight: 700 }}>{finalRank}</div>
+             </div>
+          </div>
           <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center' }}>
-          <button 
-            onClick={() => window.location.reload()} 
-            style={{ 
-              background: 'var(--primary)', 
-              color: '#0A0510', 
-              padding: '1rem 2.5rem', 
-              borderRadius: '12px', 
-              fontWeight: 900, 
-              fontFamily: 'JetBrains Mono',
-              border: 'none',
-              cursor: 'pointer',
-              boxShadow: '0 10px 20px var(--primary-glow)'
-            }}
-          >RESTART_SESSION</button>
-          <button 
-            onClick={onBack} 
-            style={{ 
-              background: 'rgba(255,255,255,0.05)', 
-              color: 'white', 
-              padding: '1rem 2.5rem', 
-              borderRadius: '12px', 
-              fontWeight: 900, 
-              fontFamily: 'JetBrains Mono',
-              border: '1px solid rgba(255,255,255,0.1)',
-              cursor: 'pointer'
-            }}
-          >CLOSE_CASE</button>
-        </div>
+            <button onClick={() => window.location.reload()} className="btn-primary" style={{ background: 'var(--primary)', color: 'white', padding: '1rem 2rem', borderRadius: '12px', border: 'none', cursor: 'pointer' }}>RESTART_SESSION</button>
+            <button onClick={onBack} style={{ padding: '1rem 2rem', borderRadius: '12px', border: '1px solid var(--encre-dim)', background: 'none', color: 'var(--encre)', cursor: 'pointer' }}>CLOSE_CASE</button>
+          </div>
+        </motion.div>
       </div>
     );
   }
@@ -199,156 +270,65 @@ export default function QuizEngine({ level, onBack }) {
   return (
     <div style={{ maxWidth: '900px', margin: '0 auto', padding: '2rem' }}>
       {/* HUD (S2 Elevation) */}
-      <div className="hud-container bento-card" style={{ 
-        marginBottom: '2.5rem', 
-        cursor: 'default',
-        background: 'rgba(255,255,255,0.05)',
-        border: '1px solid rgba(255,255,255,0.1)',
-        backdropFilter: 'blur(10px)',
-        padding: '1.5rem 2rem',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center'
-      }}>
+      <div className="hud-container bento-card" style={{ marginBottom: '2.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-            <div className="font-mono" style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', fontWeight: 900 }}>DOSSIER_{session.idx + 1}</div>
-            <div style={{ 
-              background: 'var(--primary)', 
-              color: '#0A0510', 
-              fontSize: '0.6rem', 
-              padding: '2px 8px', 
-              borderRadius: '4px',
-              fontWeight: 900,
-              boxShadow: '0 0 10px var(--primary-glow)'
-            }}>{activeItem.difficulty?.toUpperCase() || 'BASE'}</div>
+            <div className="font-mono" style={{ fontSize: '0.7rem', color: 'var(--encre-dim)', fontWeight: 900 }}>DOSSIER_{session.idx + 1}</div>
+            <div className="tag tag-vibrant">{activeItem.difficulty?.toUpperCase() || 'BASE'}</div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '2.5rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <Clock size={16} style={{ color: timeLeft < 5 ? 'var(--primary)' : 'rgba(255,255,255,0.4)' }} />
-                <span className="font-mono font-black" style={{ fontSize: '1.1rem' }}>{timeLeft}s</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--encre)' }}>
+                <Clock size={16} />
+                <span className="font-mono">{timeLeft}s</span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <Target size={16} style={{ color: 'var(--primary)' }} />
-                <span className="font-mono font-black" style={{ fontSize: '1.1rem' }}>{session.score}</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--encre)' }}>
+                <Target size={16} />
+                <span className="font-mono">{session.score}</span>
             </div>
-            {session.streak > 1 && (
-                <div style={{ 
-                  background: 'var(--accent)', 
-                  color: 'white', 
-                  padding: '4px 12px', 
-                  borderRadius: '20px',
-                  fontSize: '0.7rem',
-                  fontWeight: 900,
-                  boxShadow: '0 0 15px var(--accent-glow)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px'
-                }}>
-                    <Zap size={10} fill="currentColor" /> x{session.streak}
-                </div>
-            )}
         </div>
       </div>
 
       <AnimatePresence mode="wait">
-        <motion.div
-           key={session.idx + phase}
-           initial={{ opacity: 0, y: 20 }}
-           animate={{ opacity: 1, y: 0 }}
-           exit={{ opacity: 0, y: -20 }}
-           className={`bento-card ${phase === 'verdict' ? (selectedOpt?.correct ? 'gavel-strike' : 'case-dismissed') : ''}`}
-           style={{ minHeight: '300px', display: 'flex', flexDirection: 'column', justifyContent: 'center', cursor: 'default' }}
-        >
-          {phase === 'thinking' && (
-            <div style={{ padding: '2rem' }}>
-              <div className="coach-msg font-mono" style={{ color: 'var(--primary)', fontWeight: 900, marginBottom: '1rem' }}>INSTRUCTION_EN_COURS // N{String(level).toUpperCase()}</div>
-              <h2 className="font-display" style={{ fontSize: '2.5rem', marginBottom: '3rem', lineHeight: 1.2 }}>{activeItem.q || activeItem.subject}</h2>
-              
-              <div style={{ display: 'grid', gap: '1.2rem' }}>
-                {shuffledOptions.map((opt, i) => (
-                  <button 
-                    key={i} 
-                    className="bento-card" 
-                    style={{ 
-                      padding: '1.5rem', 
-                      textAlign: 'left', 
-                      background: 'rgba(255,255,255,0.03)',
-                      border: '1px solid rgba(255,255,255,0.05)',
-                      transition: 'all 0.3s cubic-bezier(0.19, 1, 0.22, 1)'
-                    }}
-                    onClick={() => handleVerdict(opt)}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                      <span className="font-mono" style={{ fontSize: '0.6rem', opacity: 0.3, fontWeight: 900 }}>VERDICT_{i+1}</span>
-                      <span style={{ fontSize: '1.1rem', fontWeight: 500, color: 'white' }}>{opt.text}</span>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
+        <motion.div key={session.idx} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className={engineClassName} style={{ padding: '3rem' }}>
+          <div style={{ marginBottom: '3rem' }}>
+             <p className="font-mono" style={{ fontSize: '0.6rem', color: 'var(--primary)', marginBottom: '1rem', letterSpacing: '0.2em' }}>INSTRUCTION_EN_COURS</p>
+             <h2 style={{ fontFamily: 'Libre Baskerville', fontSize: '1.85rem', color: 'var(--encre)', lineHeight: 1.4 }}>{activeItem.q}</h2>
+          </div>
 
-          {phase === 'judging' && (
-            <div style={{ textAlign: 'center', padding: '4rem 0' }}>
-              <motion.div 
-                animate={{ 
-                  rotate: [-10, 10, -10],
-                  scale: [1, 1.1, 1],
-                  filter: ['drop-shadow(0 0 0px var(--primary))', 'drop-shadow(0 0 20px var(--primary))', 'drop-shadow(0 0 0px var(--primary))']
-                }} 
-                transition={{ repeat: Infinity, duration: 0.8 }}
-                style={{ color: 'var(--primary)' }}
-              >
-                <Gavel size={80} />
-              </motion.div>
-              <div className="font-mono coach-msg" style={{ marginTop: '2rem', color: 'var(--primary)', fontWeight: 900, letterSpacing: '0.2em' }}>DÉLIBÉRÉ_EN_COURS...</div>
-            </div>
-          )}
+          <div style={{ display: 'grid', gap: '1.2rem' }}>
+             {shuffledOptions.map((opt, i) => (
+               <button
+                 key={i}
+                 disabled={phase !== 'thinking'}
+                 onClick={() => handleVerdict(opt)}
+                 style={{
+                   background: selectedOpt === opt ? 'var(--primary-glow)' : 'var(--s1-card)',
+                   border: `1px solid ${selectedOpt === opt ? 'var(--primary)' : 'var(--glass-border)'}`,
+                   padding: '1.5rem', borderRadius: '16px', color: 'var(--encre)', textAlign: 'left', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '1.5rem'
+                 }}
+               >
+                 <div className="step-circle" style={{ width: '32px', height: '32px', fontSize: '0.8rem', background: selectedOpt === opt ? 'var(--primary)' : 'none', color: selectedOpt === opt ? 'white' : 'var(--encre)' }}>{String.fromCharCode(65 + i)}</div>
+                 {opt.text}
+               </button>
+             ))}
+          </div>
 
           {phase === 'verdict' && (
-            <div className="coach-feedback-box" style={{ padding: '2rem' }}>
-              <div className="coach-logic-violation" style={{ 
-                color: selectedOpt?.correct ? 'var(--primary)' : '#ff4d4d', 
-                fontWeight: 900, 
-                fontFamily: 'JetBrains Mono',
-                fontSize: '0.7rem',
-                letterSpacing: '0.2em',
-                marginBottom: '1rem'
-              }}>{coach.violation}</div>
-              
-              <div className="coach-analysis" style={{ fontSize: '1.2rem', color: 'white', lineHeight: 1.6, fontStyle: 'italic', marginBottom: '2rem' }}>
-                {selectedOpt?.correct ? coach.analysis : coach.analysis}
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="coach-feedback-box">
+              <div className="coach-logic-violation">{coach.violation}</div>
+              <p className="coach-analysis">{coach.analysis}</p>
+              <div style={{ marginTop: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--primary)', fontSize: '0.8rem' }}>
+                 <Info size={14} /> {coach.tip}
               </div>
               
-              <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-                 <p className="font-mono" style={{ fontSize: '0.7rem', opacity: 0.4, marginBottom: '0.5rem', fontWeight: 900 }}>INSTRUCTION_DU_COACH :</p>
-                 <p style={{ color: 'var(--primary)', fontWeight: 600, fontSize: '0.95rem' }}>{coach.tip}</p>
-              </div>
-              
-              <button 
-                onClick={nextCase} 
-                className="btn-primary" 
-                style={{ 
-                  width: '100%', 
-                  marginTop: '2.5rem', 
-                  display: 'flex', 
-                  justifyContent: 'center', 
-                  alignItems: 'center', 
-                  gap: '1rem',
-                  background: 'var(--primary)',
-                  color: '#0A0510',
-                  border: 'none',
-                  padding: '1.2rem',
-                  borderRadius: '12px',
-                  fontWeight: 900,
-                  fontFamily: 'JetBrains Mono',
-                  boxShadow: '0 10px 30px var(--primary-glow)',
-                  cursor: 'pointer'
-                }}
-              >
-                PASSER AU DOSSIER SUIVANT <ChevronRight size={18} />
-              </button>
-            </div>
+              {/* CROSS-REFERENCE LINK */}
+              {coach.related && (
+                <button className="tag tag-vibrant" style={{ marginTop: '1.5rem', cursor: 'pointer', width: '100%' }}>
+                   Approfondir : {coach.related}
+                </button>
+              )}
+
+              <button onClick={nextCase} className="btn-primary" style={{ marginTop: '2rem', width: '100%', background: 'var(--primary)', color: 'white', padding: '1rem', borderRadius: '12px', border: 'none', cursor: 'pointer', fontWeight: 900 }}>NEXT_CASE</button>
+            </motion.div>
           )}
         </motion.div>
       </AnimatePresence>

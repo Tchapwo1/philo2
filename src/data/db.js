@@ -707,7 +707,26 @@ export const DB_L8 = [
     paradox: "Si l'inconscient existe, je ne suis pas maître de moi ; mais si je ne suis pas responsable, la morale disparaît.",
     duel: "Freud (le déterminisme psychique) vs Sartre (la mauvaise foi).",
     standing: "Distinguer la CAUSE (physique/psychique) du MOTIF (raison d'agir).",
-    tip: "Sujet sur la Conscience et la Morale. Très fréquent au baccalauréat."
+    tip: "Sujet sur la Conscience et la Morale. Très fréquent au baccalauréat.",
+    related: 12
+  },
+  {
+    subject: "La technique nous rend-elle plus libres ?",
+    hook: "L'omniprésence des algorithmes et des smartphones qui semblent décider à notre place.",
+    paradox: "La technique libère des tâches pénibles (Autonomie), mais crée une dépendance vitale aux systèmes (Hétéronomie).",
+    duel: "Heidegger (l'arraisonnement) vs Simondon (la culture technique).",
+    standing: "Mobiliser le repère MOYEN (outil) vs FIN (but de l'action).",
+    tip: "Sujet sur la Technique et la Liberté. Éviter le technophobisme primaire.",
+    related: 1
+  },
+  {
+    subject: "Faut-il préférer l'injustice au désordre ?",
+    hook: "La répression de manifestations violentes au nom du maintien de la paix publique.",
+    paradox: "L'ordre est la condition de la justice, mais un ordre injuste n'est plus que de la violence légalisée.",
+    duel: "Goethe (préférer l'injustice au désordre) vs Camus (la révolte).",
+    standing: "Distinguer la PAIX (absence de conflit) de la JUSTICE (égalité des droits).",
+    tip: "Sujet politique majeur sur l'État et la Justice.",
+    related: 2
   }
 ];
 
@@ -773,5 +792,35 @@ export const DB_L6 = [
       { text: "Prétendre que l'homme a une petite part de liberté mystérieuse qui échappe à la science.", correct: false }
     ],
     tip: "C'est l'approche de Spinoza ou des neurosciences : on soigne ou on enferme non par haine, mais pour protéger le corps social."
+  }
+];
+
+export const DB_L9 = [
+  {
+    id: "L9_1",
+    subject: "Peut-on être indifférent à la vérité ?",
+    task: "Rédigez une ACCROCHE (Hook) utilisant un exemple d'actualité ou historique.",
+    type: "hook",
+    keywords: ["fake news", "post-vérité", "réseaux sociaux", "conspiration", "indifférence", "clic"],
+    simoneHints: "Pensez à l'impact des algorithmes sur notre rapport au réel.",
+    masterpiece: "L'essor de la post-vérité et des 'fake news' sur les réseaux sociaux suggère que l'efficacité émotionnelle d'une information prime désormais sur son adéquation au réel..."
+  },
+  {
+    id: "L9_2",
+    subject: "La liberté est-elle une absence de contraintes ?",
+    task: "Formulez le PARADOXE central de ce sujet.",
+    type: "paradox",
+    keywords: ["licence", "loi", "autonomie", "contrainte", "nécessité", "choix"],
+    simoneHints: "Opposez la liberté sauvage à la liberté civile (Rousseau).",
+    masterpiece: "Si la liberté semble d'abord être l'absence de toute limite, elle risque de se détruire elle-même dans le chaos ; à l'inverse, la loi qui limite l'action semble être la condition même de son exercice réel."
+  },
+  {
+    id: "L9_3",
+    subject: "L'art est-il un luxe ?",
+    task: "Rédigez une ACCROCHE (Hook) montrant l'enjeu politique de l'art.",
+    type: "hook",
+    keywords: ["musée", "culture", "bourgeois", "distinction", "engagement", "propagande"],
+    simoneHints: "Pensez à Bourdieu ou à l'art comme outil de résistance.",
+    masterpiece: "Alors que l'art est souvent perçu comme un ornement superflu réservé à une élite, les régimes totalitaires s'empressent toujours de le censurer, prouvant par là sa puissance subversive fondamentale."
   }
 ];

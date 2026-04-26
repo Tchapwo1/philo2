@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { Compass, FileText, Swords, Search, Gavel, Target, Layout } from 'lucide-react'
+import { Compass, FileText, Swords, Search, Gavel, Target, Layout, PenTool, Sparkles } from 'lucide-react'
 
 const levels = [
   { 
@@ -69,56 +69,144 @@ const levels = [
 ]
 export default function LevelSelection({ onSelect }) {
   return (
-    <div className="space-y-12">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', 
+        gap: '1.5rem' 
+      }}>
         {levels.map((level, i) => (
           <motion.button
             key={level.id}
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            whileHover={{ scale: 1.02, borderColor: 'var(--primary)', backgroundColor: 'rgba(255,255,255,0.06)' }}
+            whileTap={{ scale: 0.98 }}
+            viewport={{ once: true }}
+            transition={{ delay: i * 0.05 }}
             onClick={() => onSelect(level.id)}
-            className="level-card group"
+            className="bento-card"
+            style={{ 
+              textAlign: 'left',
+              padding: '1.5rem',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1rem',
+              background: 'rgba(255,255,255,0.03)',
+              border: '1px solid rgba(255,255,255,0.1)',
+              borderRadius: '20px',
+              cursor: 'pointer'
+            }}
           >
-            <div className="flex justify-between items-start mb-6">
-              <span className="font-mono text-[0.6rem] font-bold px-3 py-1 bg-[var(--primary-ghost)] text-[var(--primary)] border border-[var(--primary)] uppercase tracking-widest shadow-[3px_3px_0_var(--encre)]">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span className="font-mono" style={{ 
+                fontSize: '0.6rem', 
+                fontWeight: 900, 
+                padding: '4px 10px', 
+                background: 'rgba(253, 185, 39, 0.1)', 
+                color: 'var(--primary)', 
+                borderRadius: '6px',
+                letterSpacing: '0.1em'
+              }}>
                 {level.badge}
               </span>
-              <div className="text-[var(--encre-dim)] group-hover:text-[var(--primary)] transition-colors">
+              <div style={{ color: 'rgba(255,255,255,0.4)' }}>
                 {level.icon}
               </div>
             </div>
-            <h3 className="font-display text-2xl mb-4 leading-tight group-hover:text-[var(--primary)] transition-colors">{level.title}</h3>
-            <p className="text-sm text-[var(--encre-dim)] leading-relaxed italic">
-              {level.desc}
-            </p>
+            <div>
+              <h3 className="font-display" style={{ fontSize: '1.25rem', marginBottom: '0.25rem', color: 'white' }}>{level.title}</h3>
+              <p style={{ fontSize: '0.8rem', opacity: 0.6, fontStyle: 'italic', lineHeight: 1.4 }}>
+                {level.desc}
+              </p>
+            </div>
           </motion.button>
         ))}
       </div>
 
-      <motion.button
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-        onClick={() => onSelect(8)}
-        className="level-card w-full text-left bg-[var(--primary)] text-white hover:bg-white hover:text-[var(--primary)] hover:translate-x-2 transition-all shadow-[12px_12px_0_var(--encre)]"
-      >
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-8">
-          <div className="flex-1">
-            <span className="font-mono text-[0.6rem] tracking-[0.3em] uppercase mb-4 block font-bold opacity-80">
-              ⚖ N8 · Le Grand Verdict
-            </span>
-            <h2 className="font-display text-3xl sm:text-4xl italic mb-4 leading-tight text-white group-hover:text-[var(--primary)] transition-colors">Simulation Totale</h2>
-            <p className="text-sm opacity-80 leading-relaxed max-w-xl italic">
-              Synthétisez toute la data du programme pour construire une copie 20/20. 
-              Hameçon, Paradoxe, Duel, Standing : devenez Grand Maître du Tribunal.
-            </p>
-          </div>
-          <div className="bg-white text-[var(--primary)] p-6 rounded-full shadow-xl group-hover:scale-110 transition-transform hidden md:block border-2 border-[var(--encre)]">
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '2rem' }}>
+        {/* N8 Slot */}
+        <motion.button
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          onClick={() => onSelect(8)}
+          className="bento-card"
+          style={{ 
+            textAlign: 'left', 
+            background: 'var(--primary)', 
+            color: '#0A0510', 
+            padding: '2rem',
+            borderRadius: '24px',
+            boxShadow: '0 20px 50px var(--primary-glow)',
+            border: 'none',
+            cursor: 'pointer'
+          }}
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ flex: 1 }}>
+              <span className="font-mono" style={{ 
+                fontSize: '0.6rem', 
+                fontWeight: 900, 
+                background: 'rgba(0,0,0,0.1)', 
+                padding: '4px 10px', 
+                borderRadius: '6px',
+                letterSpacing: '0.1em',
+                marginBottom: '1rem',
+                display: 'inline-block'
+              }}>
+                ⚖ N8 · LE GRAND VERDICT
+              </span>
+              <h2 className="font-display" style={{ fontSize: '2rem', marginBottom: '0.5rem', fontStyle: 'italic' }}>Simulation Totale</h2>
+              <p style={{ fontSize: '0.9rem', opacity: 0.8, lineHeight: 1.5 }}>
+                Synthétisez toute la data du programme pour construire une copie 20/20.
+              </p>
+            </div>
             <Gavel size={32} />
           </div>
-        </div>
-      </motion.button>
+        </motion.button>
+
+        {/* N9 Master Slot */}
+        <motion.button
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          onClick={() => onSelect(9)}
+          className="bento-card"
+          style={{ 
+            textAlign: 'left', 
+            background: 'white', 
+            color: '#0A0510', 
+            padding: '2rem',
+            borderRadius: '24px',
+            boxShadow: '0 20px 50px rgba(255,255,255,0.05)',
+            border: 'none',
+            cursor: 'pointer'
+          }}
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ flex: 1 }}>
+              <span className="font-mono" style={{ 
+                fontSize: '0.6rem', 
+                fontWeight: 900, 
+                background: 'rgba(0,0,0,0.05)', 
+                padding: '4px 10px', 
+                borderRadius: '6px',
+                letterSpacing: '0.1em',
+                marginBottom: '1rem',
+                display: 'inline-block'
+              }}>
+                🖋 N9 · LA PLUME D'OR
+              </span>
+              <h2 className="font-display" style={{ fontSize: '2rem', marginBottom: '0.5rem', fontStyle: 'italic' }}>Suite de Rédaction</h2>
+              <p style={{ fontSize: '0.9rem', opacity: 0.7, lineHeight: 1.5 }}>
+                Passez à l'acte. Rédigez vos accroches et paradoxes sous l'instruction de Simone.
+              </p>
+            </div>
+            <PenTool size={32} />
+          </div>
+        </motion.button>
+      </div>
     </div>
-  )
+  );
 }
