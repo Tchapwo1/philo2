@@ -8,6 +8,7 @@ const philosophers = [
     notion: "La Liberté & Dieu",
     summary: "Pour Spinoza, Dieu et la Nature sont une seule et même chose. La liberté n'est pas le libre arbitre, mais la compréhension de la nécessité.",
     concepts: ["Conatus", "Substance", "Joie active"],
+    image: "/portraits/spinoza_atmos_portrait_1777099580000_1777173904528.png",
     color: "var(--rasp)"
   },
   {
@@ -16,7 +17,7 @@ const philosophers = [
     notion: "La Volonté de Puissance",
     summary: "Le marteau de la philosophie. Il déconstruit la morale chrétienne et annonce le Surhomme comme dépassement de l'homme actuel.",
     concepts: ["Surhomme", "Éternel Retour", "Amor Fati"],
-    image: "/src/assets/philosophers/nietzsche.png",
+    image: "/portraits/nietzsche_atmos_portrait_1777099536482.png",
     color: "var(--azur)"
   },
   {
@@ -25,7 +26,7 @@ const philosophers = [
     notion: "La Méthode & Le Cogito",
     summary: "Le fondateur de la modernité. Il cherche une certitude indubitable par le doute méthodique pour reconstruire tout le savoir.",
     concepts: ["Doute", "Cogito", "Dualisme"],
-    image: "/src/assets/philosophers/descartes.png",
+    image: "/portraits/descartes_atmos_portrait_1777099551639.png",
     color: "var(--vert)"
   },
   {
@@ -34,7 +35,7 @@ const philosophers = [
     notion: "Le Monde des Idées",
     summary: "Père de la métaphysique occidentale. Il distingue le monde sensible des ombres et le monde intelligible des Idées éternelles.",
     concepts: ["Mimèsis", "Dialectique", "Idées"],
-    image: "/src/assets/philosophers/plato.png",
+    image: "/portraits/plato_atmos_portrait_1777099566538.png",
     color: "var(--primary)"
   },
   {
@@ -43,6 +44,7 @@ const philosophers = [
     notion: "Le Devoir & La Raison",
     summary: "Fondateur du criticisme, il définit la morale par l'impératif catégorique : agir selon une règle universelle.",
     concepts: ["Noumen", "Phénomène", "Autonomie"],
+    image: "/portraits/kant_atmos_portrait_1777099570000_1777173892095.png",
     color: "var(--azur)"
   },
   {
@@ -51,7 +53,35 @@ const philosophers = [
     notion: "L'Existence & Le Genre",
     summary: "Figure de l'existentialisme, elle explore la liberté humaine et la construction sociale de l'identité féminine.",
     concepts: ["Immanence", "Transcendance", "Située"],
+    image: "/portraits/beauvoir_atmos_portrait_1777099590000_1777173916601.png",
     color: "var(--vert)"
+  },
+  {
+    name: "Jean-Paul Sartre",
+    era: "XXe siècle",
+    notion: "La Liberté Radicale",
+    summary: "Chef de file de l'existentialisme. L'existence précède l'essence : l'homme est condamné à être libre.",
+    concepts: ["Angoisse", "Mauvaise Foi", "Engagement"],
+    image: "/portraits/sartre_atmos_portrait_1777099600000_1777173933997.png",
+    color: "var(--rasp)"
+  },
+  {
+    name: "Karl Marx",
+    era: "XIXe siècle",
+    notion: "Le Matérialisme",
+    summary: "Il analyse l'histoire comme une lutte des classes et vise la transformation du monde par la révolution.",
+    concepts: ["Aliénation", "Plus-value", "Praxis"],
+    image: "/portraits/marx_atmos_portrait_1777099610000_1777173947222.png",
+    color: "var(--azur-dim)"
+  },
+  {
+    name: "Jean-Jacques Rousseau",
+    era: "XVIIIe siècle",
+    notion: "Le Contrat Social",
+    summary: "Théoricien de la souveraineté populaire et de la bonté naturelle de l'homme corrompue par la société.",
+    concepts: ["Volonté Générale", "État de Nature", "Liberté Civile"],
+    image: "/portraits/rousseau_atmos_portrait_1777099620000_1777173960087.png",
+    color: "var(--vert-dim)"
   }
 ]
 
