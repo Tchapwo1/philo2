@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { Compass, FileText, Swords, Search, Gavel } from 'lucide-react'
+import { Compass, FileText, Swords, Search, Gavel, Target } from 'lucide-react'
 
 const levels = [
   { 
